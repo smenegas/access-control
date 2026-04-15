@@ -1,0 +1,187 @@
+/*==========================================================================
+   Layout Principal (Fundo e Alinhamento)
+   ========================================================================== */
+.login-page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f4f6f9; /* Fundo cinza suave institucional */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* O cartão branco onde ficam os formulários */
+.login-card {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 420px; /* Largura padrão para Login */
+  box-sizing: border-box;
+  transition: max-width 0.3s ease;
+}
+
+/* ==========================================================================
+   Cabeçalho das Telas de Autenticação
+   ========================================================================== */
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.logo-placeholder {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.login-header h2 {
+  color: #2c3e50;
+  margin: 0 0 5px 0;
+  font-size: 24px;
+}
+
+.login-header p {
+  color: #7f8c8d;
+  margin: 0;
+  font-size: 14px;
+}
+
+/* ==========================================================================
+   Formulários e Inputs
+   ========================================================================== */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.input-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 6px;
+}
+
+.login-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 15px;
+  color: #2d3748;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+/* Efeito de Foco (Acessibilidade e UX) */
+.login-input:focus {
+  border-color: #3182ce;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
+}
+
+.login-input::placeholder {
+  color: #a0aec0;
+}
+
+/* Customização específica para o Select na tela de Registro */
+select.login-input.select-input {
+  appearance: none;
+  background-color: white;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23A0AEC0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px top 50%;
+  background-size: 10px auto;
+  padding-right: 30px;
+}
+
+/* ==========================================================================
+   Botões e Ações
+   ========================================================================== */
+.btn-login {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  margin-top: 5px;
+  box-shadow: 0 4px 6px rgba(41, 128, 185, 0.2);
+}
+
+.btn-login:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 8px rgba(41, 128, 185, 0.3);
+}
+
+.btn-registro {
+  background: transparent;
+  color: #3182ce;
+  border: 1px solid #3182ce;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.btn-registro:hover {
+  background: #ebf8ff;
+}
+
+/* Divisor visual ("ou") */
+.login-divider {
+  margin: 30px 0;
+  border-bottom: 1px solid #e2e8f0;
+  position: relative;
+  text-align: center;
+}
+
+.login-divider span {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 0 15px;
+  color: #a0aec0;
+  font-size: 14px;
+}
+
+.login-footer {
+  text-align: center;
+}
+
+/* ==========================================================================
+   Mensagens de Feedback (Erros e Sucesso)
+   ========================================================================== */
+.erro-mensagem {
+  background-color: #fff5f5;
+  color: #c53030;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  border: 1px solid #feb2b2;
+  text-align: center;
+}
+
+.sucesso-mensagem {
+  background-color: #f0fdf4;
+  color: #166534;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  border: 1px solid #bbf7d0;
+  text-align: center;
+}

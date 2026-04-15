@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './login.css'; // Importando o arquivo de estilos
+//import './login.css'; // Importando o arquivo de estilos
+import '../autentication.css'; // Importando o arquivo de estilos
 
-export default function Login({ aoLogarComSucesso, aoIrParaRegistro }) {
+export default function Login() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const navigate = useNavigate();
@@ -35,6 +36,10 @@ export default function Login({ aoLogarComSucesso, aoIrParaRegistro }) {
       setErro('Erro ao conectar com o servidor.');
     }*/
   };
+
+  const handleNewAccount = () => {
+    navigate('/new-account');
+  }
 
   return (
     <div className="login-page-wrapper">
@@ -87,8 +92,8 @@ export default function Login({ aoLogarComSucesso, aoIrParaRegistro }) {
 
         <div className="login-footer">
           <p>Ainda não possui acesso?</p>
-          <button onClick={aoIrParaRegistro} className="btn-registro">
-            Solicitar Cadastro de Servidor
+          <button onClick={handleNewAccount} className="btn-registro">
+            Cadastre uma nova conta
           </button>
         </div>
 
