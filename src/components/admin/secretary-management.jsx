@@ -6,11 +6,6 @@ export default function SecretaryManagement() {
   const [editandoId, setEditandoId] = useState(null);
   const [nomeEdicao, setNomeEdicao] = useState('');
 
-  // Carregar dados iniciais
-  useEffect(() => {
-    buscarSecretarias();
-  }, []);
-
   const buscarSecretarias = async () => {
     const token = sessionStorage.getItem('@AppAcessos:token');
     const res = await fetch('/api/admin/secretarias', {
@@ -18,6 +13,11 @@ export default function SecretaryManagement() {
     });
     if (res.ok) setSecretarias(await res.json());
   };
+
+  // Carregar dados iniciais
+  useEffect(() => {
+    buscarSecretarias(); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Cadastrar
   const adicionarSecretaria = async (e) => {
