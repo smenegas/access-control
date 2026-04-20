@@ -1,7 +1,18 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { logout, getUser } from '../../helpers/authentication';
 import './claimant-dashboard.css'; // Importando o arquivo de estilos
 
 function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
+  const [menuAberto, setMenuAberto] = useState(false);
+  const navigate = useNavigate();
+  const user = getUser();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   // Dados simulados (Mock) para o histórico do usuário
   const [solicitacoes] = useState([
     {
@@ -53,8 +64,23 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
           </div>
         </div>
         <div className="usuario-info">
-          <span className="avatar">JS</span>
-          <span>João Servidor</span>
+          <span className="avatar">{(user?.name || user?.nome || 'Usuário').charAt(0).toUpperCase()}</span>
+          <button
+            type="button"
+            className="usuario-nome"
+            onClick={() => setMenuAberto((prev) => !prev)}
+          >
+            {user?.name || user?.nome || 'Usuário'}
+          </button>
+          {menuAberto && (
+            <div className="user-menu">
+              <button type="button" className="menu-item">Minha Conta</button>
+              {user?.profile > 2 && (
+                <button type="button" className="menu-item">Painel Administrativo</button>
+              )}
+              <button type="button" className="menu-item" onClick={handleLogout}>Sair</button>
+            </div>
+          )}
         </div>
       </header>
 
