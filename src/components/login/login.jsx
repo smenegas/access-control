@@ -1,40 +1,24 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-//import './login.css'; // Importando o arquivo de estilos
+import { login } from '../../helpers/authentication';
 import '../autentication.css'; // Importando o arquivo de estilos
 
 export default function Login() {
   const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const [erro, setErro] = useState('');
 
   const handleLogin = async (e) => {
-    navigate('/dashboard'); // Simula um login bem-sucedido redirecionando para o dashboard
-    //TODO: Utilizar o código comentado abaixo para realizar a autenticação real com o backend. Por enquanto, vamos simular um login bem-sucedido para facilitar o desenvolvimento do dashboard.
-    /*e.preventDefault();
+    e.preventDefault();
     setErro('');
+
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha })
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Salva o token no Session Storage (some se fechar a aba)
-        sessionStorage.setItem('@AppAcessos:token', data.token);
-        sessionStorage.setItem('@AppAcessos:user', JSON.stringify(data.usuario));
-        
-        aoLogarComSucesso(data.usuario);
-      } else {
-        setErro(data.error);
-      }
+      await login({ email, password });
+      navigate('/dashboard');
     } catch (error) {
-      setErro('Erro ao conectar com o servidor.');
-    }*/
+      setErro(error.message || 'Erro ao conectar com o servidor.');
+    }
   };
 
   const handleNewAccount = () => {
@@ -69,14 +53,14 @@ export default function Login() {
           </div>
 
           <div className="input-group">
-            <label htmlFor="senha">Senha</label>
+            <label htmlFor="password">Senha</label>
             <input 
-              id="senha"
+              id="password"
               type="password" 
               placeholder="••••••••" 
               required
-              value={senha} 
-              onChange={e => setSenha(e.target.value)} 
+              value={password} 
+              onChange={e => setPassword(e.target.value)} 
               className="login-input"
             />
           </div>
