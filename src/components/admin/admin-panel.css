@@ -38,11 +38,15 @@
   background: #edf2f7;
 }
 
-.admin-sidebar nav button.ativo {
-  background: #ebf8ff;
-  border-left-color: #3182ce;
-  color: #3182ce;
-  font-weight: bold;
+.admin-sidebar nav button.logout-btn {
+  margin-top: 20px;
+  border-top: 1px solid #e2e8f0;
+  color: #e53e3e;
+}
+
+.admin-sidebar nav button.logout-btn:hover {
+  background: #fed7d7;
+  color: #c53030;
 }
 
 .admin-content {

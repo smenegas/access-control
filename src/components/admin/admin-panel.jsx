@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { logout } from '../../helpers/authentication';
 import SecretaryManagement from './secretary-management';
 // Importe os outros futuramente: GestaoPastas, GestaoMenus, GestaoUsuarios...
 import './admin-panel.css'; // Estilos específicos para o painel admin
 
 export default function AdminPanel() {
   const [abaAtiva, setAbaAtiva] = useState('secretarias');
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   // Função para renderizar o subcomponente correto com base no menu clicado
   const renderizarConteudo = () => {
@@ -46,6 +54,12 @@ export default function AdminPanel() {
             onClick={() => setAbaAtiva('usuarios')}
           >
             👥 Usuários
+          </button>
+          <button 
+            className="logout-btn" 
+            onClick={handleLogout}
+          >
+            🚪 Sair
           </button>
         </nav>
       </aside>
