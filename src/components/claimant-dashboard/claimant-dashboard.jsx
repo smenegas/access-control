@@ -13,6 +13,10 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
     navigate('/');
   };
 
+  const handleAdminPanel = () => {
+    navigate('/admin');
+  };
+
   // Dados simulados (Mock) para o histórico do usuário
   const [solicitacoes] = useState([
     {
@@ -76,7 +80,7 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
             <div className="user-menu">
               <button type="button" className="menu-item">Minha Conta</button>
               {user?.profile > 2 && (
-                <button type="button" className="menu-item">Painel Administrativo</button>
+                <button type="button" className="menu-item" onClick={handleAdminPanel}>Painel Administrativo</button>
               )}
               <button type="button" className="menu-item" onClick={handleLogout}>Sair</button>
             </div>
