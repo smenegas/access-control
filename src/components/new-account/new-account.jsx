@@ -47,7 +47,7 @@ export default function NewAccount({ aoVoltarLogin }) {
         const data = await response.json();
         setMensagem({ texto: data.error || 'Erro ao realizar cadastro.', tipo: 'erro' });
       }
-    } catch (error) {
+    } catch {
       setMensagem({ texto: 'Erro de conexão com o servidor.', tipo: 'erro' });
     }
   };
