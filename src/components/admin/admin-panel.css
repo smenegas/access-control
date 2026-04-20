@@ -1,3 +1,68 @@
+/* Layout Principal */
+.admin-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #333;
+}
+
+/* Cabeçalho */
+.admin-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 2px solid #eaeaea;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.admin-header-title {
+  margin: 0 0 5px 0;
+  color: #2c3e50;
+  font-size: 2rem;
+  width: 100%;
+  align-items: center;
+}
+
+.usuario-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  position: relative;
+}
+
+.usuario-nome {
+  background: transparent;
+  border: none;
+  color: #2c3e50;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+.usuario-nome:hover,
+.usuario-nome:focus {
+  background: rgba(41, 128, 185, 0.1);
+  outline: none;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #3498db;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
 .admin-layout {
   display: flex;
   min-height: 80vh;
@@ -38,6 +103,13 @@
   background: #edf2f7;
 }
 
+.admin-sidebar nav button.ativo {
+  background: #e2e8f0;
+  border-left-color: #3498db;
+  color: #2c3e50;
+  font-weight: bold;
+}
+
 .admin-sidebar nav button.logout-btn {
   margin-top: 20px;
   border-top: 1px solid #e2e8f0;
@@ -52,6 +124,41 @@
 .admin-content {
   flex: 1;
   padding: 30px;
+}
+
+.instruções-container {
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.instruções-container h2 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.instruções-container h3 {
+  color: #3498db;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+}
+
+.instruções-container p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  color: #666;
+}
+
+.instruções-container ul {
+  list-style: none;
+  padding: 0;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.instruções-container li {
+  margin-bottom: 15px;
+  font-size: 1rem;
+  text-align: left;
 }
 
 .form-adicionar {
