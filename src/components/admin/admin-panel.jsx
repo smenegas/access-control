@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logout, getUser } from '../../helpers/authentication';
 import SecretaryManagement from './secretary-management';
+import AdminInstructions from './AdminInstructions';
 // Importe os outros futuramente: GestaoPastas, GestaoMenus, GestaoUsuarios...
 import './admin-panel.css'; // Estilos específicos para o painel admin
 
@@ -19,33 +20,14 @@ export default function AdminPanel() {
   const renderizarConteudo = () => {
     switch (abaAtiva) {
       case 'home': return (
-        <div className="instruções-container">
-          <h2>Bem-vindo, {user?.name || user?.nome || 'Admin'} ao Painel Administrativo</h2>
-          {/* <h3>Bem-vindo, {user?.name || user?.nome || 'Admin'}!</h3> */}
-          <p>Escolha uma das opções no menu lateral para gerenciar os recursos do sistema.</p>
-          <ul>
-            <li><strong>🏛️ Secretarias:</strong> Gerencie as secretarias da prefeitura.</li>
-            <li><strong>📁 Pastas de Rede:</strong> Controle o acesso às pastas compartilhadas.</li>
-            <li><strong>🖥️ Sistemas e Menus:</strong> Configure módulos e menus do sistema.</li>
-            <li><strong>👥 Usuários:</strong> Administre usuários e permissões.</li>
-          </ul>
-        </div>
+        <AdminInstructions user={user} />
       );
       case 'secretarias': return <SecretaryManagement />;
       case 'pastas': return <div>Gestão de Pastas de Rede (Em construção)</div>;
       case 'modulos': return <div>Gestão de Módulos e Menus (Em construção)</div>;
       case 'usuarios': return <div>Gestão de Usuários (Em construção)</div>;
       default: return (
-        <div className="instruções-container">
-          <h2>Bem-vindo ao Painel Administrativo</h2>
-          <p>Escolha uma das opções no menu lateral para gerenciar os recursos do sistema.</p>
-          <ul>
-            <li><strong>🏛️ Secretarias:</strong> Gerencie as secretarias da prefeitura.</li>
-            <li><strong>📁 Pastas de Rede:</strong> Controle o acesso às pastas compartilhadas.</li>
-            <li><strong>🖥️ Sistemas e Menus:</strong> Configure módulos e menus do sistema.</li>
-            <li><strong>👥 Usuários:</strong> Administre usuários e permissões.</li>
-          </ul>
-        </div>
+        <AdminInstructions user={null} />
       );
     }
   };
