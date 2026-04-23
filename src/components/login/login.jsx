@@ -14,7 +14,11 @@ export default function Login() {
     setErro('');
 
     try {
-      await login({ email, password });
+      const loginData = await login({ email, password });
+      if(loginData.user.profile === 3) {
+        navigate('/pending-requests', { state: { user: loginData.user } });
+        return;
+      }
       navigate('/dashboard');
     } catch (error) {
       setErro(error.message || 'Erro ao conectar com o servidor.');
