@@ -124,7 +124,7 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
                 <th>Data</th>
                 <th>Secretaria Vinculada</th>
                 <th>Status (Gestor)</th>
-                <th>Realizadas (TI)</th> {/* Coluna solicitada */}
+                <th>Status (TI)</th> {/* Coluna solicitada */}
                 <th>Ações</th>
               </tr>
             </thead>
