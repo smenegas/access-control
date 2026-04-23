@@ -12,7 +12,7 @@ export async function login({ email, password }) {
   });
 
   const data = await response.json();
-  console.log('Resposta do login:', data); // Log para depuração
+  //console.log('Resposta do login:', data); // Log para depuração
 
   if (!response.ok) {
     const message = data?.error || data?.message || 'Falha ao autenticar usuário.';
