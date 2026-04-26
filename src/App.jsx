@@ -5,6 +5,7 @@ import NewAccount from './components/new-account/new-account';
 import AdminPanel from './components/admin/admin-panel';
 import PendingRequestsDashboard from './components/claimant-dashboard/PendingRequestsDashboard';
 import SecretaryDashboard from './components/secretary-dashboard/secretary-dashboard';
+import ProfileError from './components/login/profile-error';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import './App.css'
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
         <Route path='pending-requests' element={<ProtectedRoute><PendingRequestsDashboard /></ProtectedRoute>} />
         <Route path='/secretary-dashboard' element={<ProtectedRoute><SecretaryDashboard /></ProtectedRoute>} />
+        <Route path='/profile-error' element={<ProfileError />} />
       </Routes>
     </BrowserRouter>
   );

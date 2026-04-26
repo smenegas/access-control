@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../../helpers/authentication';
+import { login, logout } from '../../helpers/authentication';
+import ProfileError from './profile-error';
 import '../autentication.css'; // Importando o arquivo de estilos
 
 export default function Login() {
@@ -27,8 +28,9 @@ export default function Login() {
         navigate('/dashboard');
         return;
       }
-
-      //TODO: Caso o perfil seja diferente dos esperados, fazer logout e redirecionar para tela de erro que contenha um link para voltar para a tela de login
+      // Se o perfil do usuário não for reconhecido, desloga e mostra a tela de erro de perfil
+      logout();
+      navigate('/profile-error');
 
     } catch (error) {
       setErro(error.message || 'Erro ao conectar com o servidor.');
