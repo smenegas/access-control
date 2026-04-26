@@ -24,17 +24,6 @@ export default function SecretaryDashboard() {
     }
   ]);
 
-  // Mock: Novos funcionários que se cadastraram e precisam ter a conta ativada
-  const [cadastrosPendentes] = useState([
-    {
-      id: 101,
-      nome: 'Ana Costa',
-      cpf: '111.222.333-44',
-      email: 'ana.costa@canela.rs.gov.br',
-      dataRegistro: '26/04/2026'
-    }
-  ]);
-
   return (
     <div className="dashboard-container">
       {/* Cabeçalho do Gestor */}
@@ -54,7 +43,7 @@ export default function SecretaryDashboard() {
 
       <div className="conteudo-principal">
 
-        {/* SEÇÃO 2: Solicitações de Acesso aos Sistemas */}
+        {/* Solicitações de Acesso aos Sistemas */}
         <div>
           <div className="cabecalho-lista">
             <h2>Solicitações de Acesso Pendentes</h2>
