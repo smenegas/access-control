@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logout, getUser } from '../../helpers/authentication';
 import Header from '../common/header';
+import '../common/dashboards.css';
 
 function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
   const [menuAberto, setMenuAberto] = useState(false);

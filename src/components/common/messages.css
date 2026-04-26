@@ -1,0 +1,18 @@
+/* Mensagens de erro*/
+.error-message {
+  color: #e74c3c;
+  background-color: #f8d7da;
+  border: 1px solid #e1e4e8;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+.warning-message {
+  color: #856404;
+  background-color: #fff3cd;
+  border: 1px solid #e1e4e8;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 20px;
+}

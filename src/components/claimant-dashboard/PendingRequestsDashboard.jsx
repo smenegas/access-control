@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { logout, getUser } from '../../helpers/authentication';
 import Header from '../common/header';
-import './claimant-dashboard.css';
+import '../common/dashboards.css';
+import '../common/messages.css';
 
 const PendingRequestsDashboard = ({ requests }) => {
   const location = useLocation();
@@ -30,7 +31,7 @@ const PendingRequestsDashboard = ({ requests }) => {
       <Header message="Bem-vindo(a)! Gerencie as solicitações de pastas e sistemas." />
 
       {/* Conteúdo principal */}
-      <div className="claimant-dashboard">
+      <div className="dashboard-container">
         {(!user || user.profile <= 2) ? (
           <div>
             <h2>Não autorizado</h2>
@@ -49,7 +50,7 @@ const PendingRequestsDashboard = ({ requests }) => {
                 ))}
               </ul>
             ) : (
-              <p>Não há solicitações pendentes.</p>
+              <p className='warning-message'>Não há solicitações pendentes.</p>
             )}
           </>
         )}
