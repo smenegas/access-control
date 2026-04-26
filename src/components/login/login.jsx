@@ -19,7 +19,17 @@ export default function Login() {
         navigate('/pending-requests', { state: { user: loginData.user } });
         return;
       }
-      navigate('/dashboard');
+      if(loginData.user.profile === 2) {
+        navigate('/secretary-dashboard');
+        return;
+      }
+      if(loginData.user.profile === 1) {
+        navigate('/dashboard');
+        return;
+      }
+
+      //TODO: Caso o perfil seja diferente dos esperados, fazer logout e redirecionar para tela de erro que contenha um link para voltar para a tela de login
+
     } catch (error) {
       setErro(error.message || 'Erro ao conectar com o servidor.');
     }
