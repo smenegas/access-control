@@ -7,6 +7,7 @@ import PendingRequestsDashboard from './components/claimant-dashboard/PendingReq
 import SecretaryDashboard from './components/secretary-dashboard/secretary-dashboard';
 import ProfileError from './components/login/profile-error';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import EditAccount from './components/edit-account/edit-account';
 import './App.css'
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Route path='pending-requests' element={<ProtectedRoute><PendingRequestsDashboard /></ProtectedRoute>} />
         <Route path='/secretary-dashboard' element={<ProtectedRoute><SecretaryDashboard /></ProtectedRoute>} />
         <Route path='/profile-error' element={<ProfileError />} />
+        <Route path='/edit-account' element={<ProtectedRoute><EditAccount /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );

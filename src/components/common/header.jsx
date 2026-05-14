@@ -16,6 +16,11 @@ export default function Header({ message }) {
         navigate('/');
     };
 
+    const handleMyAccount = () => {
+        setMenuAberto(false);
+        navigate('/edit-account');
+    };
+
     const handleAdminPanel = () => {
         setMenuAberto(false);
         navigate('/admin');
@@ -39,11 +44,17 @@ export default function Header({ message }) {
           </button>
           {menuAberto && (
             <div className="user-menu">
-              <button type="button" className="menu-item">Minha Conta</button>
+              <button type="button" className="menu-item" onClick={handleMyAccount}>
+                Minha Conta
+              </button>
               {user?.profile > 2 && (
-                <button type="button" className="menu-item" onClick={handleAdminPanel}>Painel Administrativo</button>
+                <button type="button" className="menu-item" onClick={handleAdminPanel}>
+                  Painel Administrativo
+                </button>
               )}
-              <button type="button" className="menu-item" onClick={handleLogout}>Sair</button>
+              <button type="button" className="menu-item" onClick={handleLogout}>
+                Sair
+              </button>
             </div>
           )}
         </div>
