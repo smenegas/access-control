@@ -1,6 +1,7 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8443';
 const STORAGE_TOKEN_KEY = '@AppAcessos:token';
 const STORAGE_USER_KEY = '@AppAcessos:user';
+const STORAGE_REFRESH_TOKEN_KEY = '@AppAcessos:refreshToken';
 
 export async function login({ email, password }) {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -24,20 +25,60 @@ export async function login({ email, password }) {
   }
 
   setSession(data.accessToken, data.user || null);
+  setRefreshToken(data.refreshToken);
   return data;
 }
 
 export function logout() {
   sessionStorage.removeItem(STORAGE_TOKEN_KEY);
   sessionStorage.removeItem(STORAGE_USER_KEY);
+  sessionStorage.removeItem(STORAGE_REFRESH_TOKEN_KEY);
 }
+
 
 export function setSession(token, usuario = null) {
   sessionStorage.setItem(STORAGE_TOKEN_KEY, token);
-
   if (usuario) {
     sessionStorage.setItem(STORAGE_USER_KEY, JSON.stringify(usuario));
   }
+}
+
+export function setRefreshToken(refreshToken) {
+  if (refreshToken) {
+    sessionStorage.setItem(STORAGE_REFRESH_TOKEN_KEY, refreshToken);
+  }
+}
+
+export function getRefreshToken() {
+  return sessionStorage.getItem(STORAGE_REFRESH_TOKEN_KEY);
+}
+
+export function removeRefreshToken() {
+  sessionStorage.removeItem(STORAGE_REFRESH_TOKEN_KEY);
+}
+
+// Função para renovar o token usando o refresh token
+export async function refreshTokenRequest() {
+  const refreshToken = getRefreshToken();
+  if (!refreshToken) throw new Error('Refresh token não encontrado.');
+
+  const response = await fetch(`${API_BASE_URL}/login/refresh`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ refreshToken })
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    removeRefreshToken();
+    throw new Error(data?.error || data?.message || 'Falha ao renovar token.');
+  }
+
+  setSession(data.accessToken, data.user || null);
+  setRefreshToken(data.refreshToken);
+  return data;
 }
 
 export function getToken() {
