@@ -1,13 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 import '../autentication.css'; // Reutilizando os estilos de autenticação
 
+//TODO: Terminar a implementação deste componente.
 export default function NewAccount({ aoVoltarLogin }) {
   const [formData, setFormData] = useState({
-    nome: '', cpf: '', email: '', senha: '', secretaria_id: ''
+    nome: '', cpf: '', email: '', senha: '', secretaria_id: '', hCaptchaToken: null
   });
+  const TEST_SITE_KEY = import.meta.env.VITE_HCAPTCHA_TEST_SITE_KEY;
+  const [captchaToken, setCaptchaToken] = useState(null);
   const [secretarias, setSecretarias] = useState([]);
   const [mensagem, setMensagem] = useState({ texto: '', tipo: '' });
+  const captchaRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -125,6 +130,13 @@ export default function NewAccount({ aoVoltarLogin }) {
               ))}
             </select>
           </div>
+
+          <HCaptcha
+            sitekey={TEST_SITE_KEY}
+            onVerify={(captchaToken) => setFormData({...formData, hCaptchaToken: captchaToken})}
+            onExpire={() => setCaptchaToken(null)}
+            ref={captchaRef}
+          />
 
           <button type="submit" className="btn-primario btn-login" style={{ marginTop: '10px' }}>
             Enviar Solicitação
