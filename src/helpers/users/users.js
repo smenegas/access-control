@@ -2,6 +2,24 @@ import { getAuthHeaders, getToken, setSession, getUser, getUserFromToken, isToke
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8443';
 
+//Função para cadastrar um novo usuário (servidor)
+export async function registerUser(userData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/public/users`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData)
+    });
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Erro ao realizar cadastro.');
+    }
+    return response;
+  } catch (error) {
+    throw new Error('Erro de conexão com o servidor: ' + error.message);
+  }
+};
+
 export async function fetchUserByToken() {
   let token = getToken();
   if (!token) return null;
