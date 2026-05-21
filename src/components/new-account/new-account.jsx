@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../../helpers/users/users';
-import LoadingOverlay from '../../helpers/loader/loader';
+import { LoadingOverlay } from '../../helpers/loader/loader';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import '../autentication.css'; // Reutilizando os estilos de autenticação
 
