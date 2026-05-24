@@ -53,3 +53,88 @@ export const getSecretaryById = async (id) => {
     throw new Error('Erro ao buscar secretaria.');
   }
 };
+
+//Create secretary
+export const createSecretary = async (data) => {
+  let token = getToken();
+  if (!token) throw new Error('Usuário não autenticado');
+
+  if (isTokenExpired(token)) {
+    //Tentar renovar o token
+    try {
+      const data = await refreshTokenRequest();
+      token = data.accessToken;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+  try {
+    const res = await fetch(`${API_BASE_URL}/secretaries`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(data)
+    });
+    return res;
+  } catch (error) {
+    throw new Error('Erro ao criar secretaria.');
+  }
+};
+
+export const updateSecretary = async (id, data) => {
+  let token = getToken();
+  if (!token) throw new Error('Usuário não autenticado');
+
+  if (isTokenExpired(token)) {
+    //Tentar renovar o token
+    try {
+      const data = await refreshTokenRequest();
+      token = data.accessToken;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+  try {
+    const res = await fetch(`${API_BASE_URL}/secretaries/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(data)
+    });
+    return res;
+  } catch (error) {
+    throw new Error('Erro ao atualizar secretaria.');
+  }
+};
+
+//Delete secretary
+export const deleteSecretary = async (id) => {
+  let token = getToken();
+  if (!token) throw new Error('Usuário não autenticado');
+
+  if (isTokenExpired(token)) {
+    //Tentar renovar o token
+    try {
+      const data = await refreshTokenRequest();
+      token = data.accessToken;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+  try {
+    const res = await fetch(`${API_BASE_URL}/secretaries/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return res;
+  } catch (error) {
+    throw new Error('Erro ao excluir secretaria.');
+  }
+};
