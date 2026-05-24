@@ -62,7 +62,7 @@ export async function refreshTokenRequest() {
   const refreshToken = getRefreshToken();
   if (!refreshToken) throw new Error('Refresh token não encontrado.');
 
-  const response = await fetch(`${API_BASE_URL}/login/refresh`, {
+  const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
