@@ -38,8 +38,17 @@ export default function NewAccount({ aoVoltarLogin }) {
       // Aguarda 5 segundos e volta para o login automaticamente
       setTimeout(() => returnToLogin(), 5000);
     } catch (error) {
-      setMessage({ text:'Erro ao realizar cadastro.', type: 'erro' });
+      if (error.message.includes('Captcha')) {
+        setMessage({ text: 'Por favor, complete o captcha para continuar.', type: 'erro' });
+      }
+      else if (error.message.includes('Duplicate')) {
+        setMessage({ text: 'Já existe um usuário cadastrado com os dados fornecidos.', type: 'erro' });
+      }
+      else{
+        setMessage({ text: error.message || 'Erro ao realizar cadastro.', type: 'erro' });
+      }
     } finally {
+      captchaRef.current.resetCaptcha();
       setLoading(false);
     }
   };
