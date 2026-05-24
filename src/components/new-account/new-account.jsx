@@ -12,7 +12,7 @@ export default function NewAccount({ aoVoltarLogin }) {
       registration_number: '', 
       email: '', 
       password: '', 
-      secretary_id: '3', //Definindo secretaria padrão para evitar erro de campo obrigatório. O ideal seria mostrar a lista de secretarias para o usuário escolher, mas isso pode ser implementado depois. Por enquanto, a maioria dos usuários é da secretaria de saúde, então vamos deixar essa como padrão.
+      secretary_id: '0', // Default para "Sem Secretaria" - pode ser ajustado conforme necessário
       profile: '1',
       hcaptchaToken: null
     }
