@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../../helpers/users/users';
-import { LoadingOverlay } from '../../helpers/loader/loader';
+import { LoadingOverlay } from '../common/loader/loader';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import '../autentication.css'; // Reutilizando os estilos de autenticação
 
@@ -38,7 +38,7 @@ export default function NewAccount({ aoVoltarLogin }) {
       // Aguarda 5 segundos e volta para o login automaticamente
       setTimeout(() => returnToLogin(), 5000);
     } catch (error) {
-      setMessage({ text: error.message || 'Erro ao realizar cadastro.', type: 'erro' });
+      setMessage({ text:'Erro ao realizar cadastro.', type: 'erro' });
     } finally {
       setLoading(false);
     }
