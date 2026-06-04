@@ -8,6 +8,7 @@ import SecretaryDashboard from './components/secretary-dashboard/secretary-dashb
 import ProfileError from './components/login/profile-error';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import EditAccount from './components/edit-account/edit-account';
+import ValidationAccounts from './components/validation-accounts/validation-accounts';
 import './App.css'
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/login/:redirect" element={<Login />} />
         <Route path="/dashboard" element={<ProtectedRoute><ClaimantDashboard /></ProtectedRoute>} />
         <Route path="/new-account" element={<NewAccount />} />
         <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
@@ -23,6 +25,7 @@ function App() {
         <Route path='/secretary-dashboard' element={<ProtectedRoute><SecretaryDashboard /></ProtectedRoute>} />
         <Route path='/profile-error' element={<ProfileError />} />
         <Route path='/edit-account' element={<ProtectedRoute><EditAccount /></ProtectedRoute>} />
+        <Route path='/validation-accounts' element={<ValidationAccounts />} />
       </Routes>
     </BrowserRouter>
   );

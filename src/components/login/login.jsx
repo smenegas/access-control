@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { login, logout } from '../../helpers/authentication';
 import ProfileError from './profile-error';
 import '../autentication.css'; // Importando o arquivo de estilos
@@ -8,6 +8,7 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const { redirect } = useParams();
   const [erro, setErro] = useState('');
 
   const handleLogin = async (e) => {
@@ -16,6 +17,10 @@ export default function Login() {
 
     try {
       const loginData = await login({ email, password });
+      if (redirect === 'validation-accounts' && loginData.user.profile === 3) {
+        navigate('/validation-accounts');
+        return;
+      }
       if(loginData.user.profile === 3) {
         navigate('/pending-requests', { state: { user: loginData.user } });
         return;

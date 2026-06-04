@@ -1,0 +1,151 @@
+/* Layout flexível para cabeçalho e linhas da lista de contas */
+.validation-accounts-flex-header {
+  display: flex;
+  background: #f5f7fa;
+  border-radius: 18px 18px 0 0;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: #222;
+  border-bottom: 2px solid #1976d2;
+  margin-bottom: 0.2rem;
+}
+
+.validation-accounts-flex-row {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 18px;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 1px 4px rgba(25, 118, 210, 0.06);
+  transition: box-shadow 0.2s;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e3e8ee;
+}
+
+.validation-accounts-flex-row:hover {
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.10);
+  border-color: #1976d2;
+}
+
+.validation-accounts-flex-col {
+  padding: 0.25rem 0.5rem;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  word-break: break-word;
+}
+
+@media (max-width: 900px) {
+  .validation-accounts-flex-header,
+  .validation-accounts-flex-row {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 0.5rem;
+  }
+  .validation-accounts-flex-col {
+    width: 100%;
+    padding: 0.5rem 0;
+  }
+}
+
+.validation-accounts-select {
+  width: 80%;
+  min-width: 120px;
+  max-width: 220px;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #bdbdbd;
+  background: #f9f9f9;
+  font-size: 0.95rem;
+  transition: border 0.2s;
+}
+.validation-accounts-select:focus {
+  border: 1.5px solid #1976d2;
+  outline: none;
+}
+/* Estilos para a tela de validação de contas */
+
+.validation-accounts-container {
+  padding: 20px;
+  /*background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);*/
+  align-items: start;
+}
+
+.validation-accounts-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.validation-accounts-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.validation-accounts-item {
+  background: #fff;
+  border-bottom: 1px solid #333;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  text-align: left;
+  transition: box-shadow 0.2s;
+}
+
+.validation-accounts-item:hover {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.validation-accounts-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+
+.validation-accounts-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background: #1976d2;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.validation-accounts-btn.icon-btn {
+  padding: 0.35rem 0.5rem;
+  min-width: 40px;
+  min-height: 40px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  color: inherit;
+  transition: background 0.2s;
+}
+.validation-accounts-btn.icon-btn svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+.validation-accounts-btn.icon-btn:hover {
+  background: rgba(25, 118, 210, 0.08);
+}
+.validation-accounts-btn.reject.icon-btn:hover {
+  background: rgba(211, 47, 47, 0.10);
+}
+
+.validation-accounts-btn:disabled {
+  background: #bdbdbd;
+  cursor: not-allowed;
+}

@@ -112,3 +112,81 @@ export async function changeUserPassword(newPassword) {
   }
   return response;
 }
+
+// Função para buscar as contas pendentes de validação (apenas para admin)
+export const fetchPendingAccounts = async () => {
+  let token = getToken();
+  if (!token) throw new Error('Usuário não autenticado');
+
+  if (isTokenExpired(token)) {
+    //Tentar renovar o token
+    try {
+      const data = await refreshTokenRequest();
+      token = data.accessToken;
+    } catch (err) {
+      throw new Error(err);
+    }
+   }
+  try {
+    const res = await fetch(`${API_BASE_URL}/users/pending`, {
+      headers: getAuthHeaders()
+    });
+    return res;
+  } catch (error) {
+    throw new Error('Erro ao buscar contas pendentes.');
+  }
+};
+
+//Função para rejeitar uma conta (apenas para admin)
+export const rejectUserAccount = async (userId) => {
+  let token = getToken();
+  if (!token) throw new Error('Usuário não autenticado');
+
+  if (isTokenExpired(token)) {
+    //Tentar renovar o token
+    try {
+      const data = await refreshTokenRequest();
+      token = data.accessToken;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+  try {
+    const res = await fetch(`${API_BASE_URL}/users/${userId}/reject`, {
+      method: 'PUT',
+      headers: getAuthHeaders()
+    });
+    return res;
+  } catch (error) {
+    throw new Error('Erro ao rejeitar conta.');
+  }
+};
+
+//Função para aprovar uma conta (apenas para admin)
+export const approveUserAccount = async (userId, secretary_id) => {
+  let token = getToken();
+  if (!token) throw new Error('Usuário não autenticado');
+
+  if (isTokenExpired(token)) {
+    //Tentar renovar o token
+    try {
+      const data = await refreshTokenRequest();
+      token = data.accessToken;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+  try {
+    const res = await fetch(`${API_BASE_URL}/users/verify`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify({ id: userId, secretary_id, account_status: 1 })
+    });
+    return res;
+  } catch (error) {
+    throw new Error('Erro ao aprovar conta.');
+  }
+};
