@@ -131,7 +131,7 @@ export default function SecretaryManagement() {
   };
 
   return (
-    <div className="crud-container">
+    <div className="secretary-management-container">
       <h2>Gestão de Secretarias</h2>
 
       {/* Mensagens de erro e sucesso */}
@@ -174,8 +174,8 @@ export default function SecretaryManagement() {
         <tbody>
           {secretaries.map(sec => (
             <tr key={sec.id}>
-              <td>{sec.id}</td>
-              <td style={{width: 150}}>
+              <td style={{ width: 50 }}>{sec.id}</td>
+              <td style={{width: 200}}>
                 {updatingId === sec.id ? (
                   <input
                     type="text" 
@@ -189,7 +189,7 @@ export default function SecretaryManagement() {
                   sec.name
                 )}
               </td>
-              <td style={{width: 50}}>
+              <td style={{width: 100}}>
                 {updatingId === sec.id ? (
                   <input
                     type="text"
