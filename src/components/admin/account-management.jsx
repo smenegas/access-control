@@ -59,30 +59,6 @@ export default function AccountMangement({ aoVoltarLogin }) {
     setMessage({ text: '', type: '' });
     setLoading(true);
 
-    if (formData.name.trim() === '') {
-      setMessage({ text: 'O campo nome é obrigatório.', type: 'erro' });
-      setLoading(false);
-      return;
-    }
-
-    if (formData.registration_number.trim() === '') {
-      setMessage({ text: 'O campo matrícula é obrigatório.', type: 'erro' });
-      setLoading(false);
-      return;
-    }
-
-    if (formData.email.trim() === '') {
-      setMessage({ text: 'O campo e-mail é obrigatório.', type: 'erro' });
-      setLoading(false);
-      return;
-    }
-
-    if (formData.password.trim() === '') {
-      setMessage({ text: 'O campo senha é obrigatório.', type: 'erro' });
-      setLoading(false);
-      return;
-    }
-
     if (formData.secretary_id === '') {
       setMessage({ text: 'Por favor, selecione uma secretaria.', type: 'erro' });
       setLoading(false);
