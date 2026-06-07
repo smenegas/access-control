@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../../helpers/users/users';
 import { LoadingOverlay } from '../common/loader/loader';
-import HCaptcha from '@hcaptcha/react-hcaptcha';
 import './account-management.css';
 import { getSecretaries } from '../../helpers/secretaries/secretaries';
 
@@ -35,10 +34,24 @@ export default function AccountMangement({ aoVoltarLogin }) {
         }
       } catch (err) {
         // falha silenciosa — lista pode permanecer vazia
+        setSecretaries([]);
+        setMessage({ text: 'Não foi possível carregar as secretarias.', type: 'erro' });
       }
     };
     loadSecretaries();
   }, []);
+
+  const clearFields = () => {
+    setFormData({
+      name: '',
+      registration_number: '',
+      email: '',
+      password: '',
+      secretary_id: '',
+      profile: '1'
+    });
+    setMessage({ text: '', type: '' });
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,7 +61,9 @@ export default function AccountMangement({ aoVoltarLogin }) {
     try {
       await registerUser(formData);
       setMessage({ text: 'Cadastro realizado com sucesso! Solicite ao TI a liberação do acesso.', type: 'sucesso' });
-      setTimeout(() => navigate('/admin'), 3000);
+      setTimeout(() => {
+        clearFields();
+      }, 3000);
     } catch (error) {
       if (error.message && error.message.includes('Captcha')) {
         setMessage({ text: 'Por favor, complete o captcha para continuar.', type: 'erro' });
