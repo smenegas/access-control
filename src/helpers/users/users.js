@@ -20,6 +20,39 @@ export async function registerUser(userData) {
   }
 };
 
+export async function adminRegisterUser(userData) {
+  let token = getToken();
+  if (!token) throw new Error('Usuário não autenticado');
+
+  // Verifica se o token está expirado e tenta renovar
+  if (isTokenExpired(token)) {
+    try {
+      const data = await refreshTokenRequest();
+      token = data.accessToken;
+    } catch (err) {
+      throw new Error('Token expirado. Usuário deve reautenticar.');
+    }
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify(userData)
+    });
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Erro ao realizar cadastro.');
+    }
+    return response;
+  } catch (error) {
+    throw new Error('Erro de conexão com o servidor: ' + error.message);
+  }
+};
+
 export async function fetchUserByToken() {
   let token = getToken();
   if (!token) return null;

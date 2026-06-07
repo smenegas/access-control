@@ -1,22 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { registerUser } from '../../helpers/users/users';
+import { adminRegisterUser } from '../../helpers/users/users';
 import { LoadingOverlay } from '../common/loader/loader';
 import './account-management.css';
 import { getSecretaries } from '../../helpers/secretaries/secretaries';
 
 export default function AccountMangement({ aoVoltarLogin }) {
+  
   const [formData, setFormData] = useState({
     name: '',
     registration_number: '',
     email: '',
     password: '',
     secretary_id: '',
-    profile: '1',
-    hcaptchaToken: null
+    profile: '1', // 1 = Comum, 2 = Gestor, 3 = Admin
+    account_status: 1 // 0 = Pendente, 1 = Ativa, 2 = Inativa
   });
-  const SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
-  const [captchaToken, setCaptchaToken] = useState(null);
+  
   const [message, setMessage] = useState({ text: '', type: '' });
   const captchaRef = useRef(null);
   const navigate = useNavigate();
@@ -48,7 +48,8 @@ export default function AccountMangement({ aoVoltarLogin }) {
       email: '',
       password: '',
       secretary_id: '',
-      profile: '1'
+      profile: '1',
+      account_status: 1
     });
     setMessage({ text: '', type: '' });
   }
@@ -58,19 +59,55 @@ export default function AccountMangement({ aoVoltarLogin }) {
     setMessage({ text: '', type: '' });
     setLoading(true);
 
+    if (formData.name.trim() === '') {
+      setMessage({ text: 'O campo nome é obrigatório.', type: 'erro' });
+      setLoading(false);
+      return;
+    }
+
+    if (formData.registration_number.trim() === '') {
+      setMessage({ text: 'O campo matrícula é obrigatório.', type: 'erro' });
+      setLoading(false);
+      return;
+    }
+
+    if (formData.email.trim() === '') {
+      setMessage({ text: 'O campo e-mail é obrigatório.', type: 'erro' });
+      setLoading(false);
+      return;
+    }
+
+    if (formData.password.trim() === '') {
+      setMessage({ text: 'O campo senha é obrigatório.', type: 'erro' });
+      setLoading(false);
+      return;
+    }
+
+    if (formData.secretary_id === '') {
+      setMessage({ text: 'Por favor, selecione uma secretaria.', type: 'erro' });
+      setLoading(false);
+      return;
+    }
+
+    if (formData.profile === '') {
+      setMessage({ text: 'Por favor, selecione um perfil para o usuário.', type: 'erro' });
+      setLoading(false);
+      return;
+    }
+
     try {
-      await registerUser(formData);
-      setMessage({ text: 'Cadastro realizado com sucesso! Solicite ao TI a liberação do acesso.', type: 'sucesso' });
+      await adminRegisterUser(formData);
+      setMessage({ text: 'Cadastro realizado com sucesso!', type: 'sucesso' });
       setTimeout(() => {
         clearFields();
       }, 3000);
     } catch (error) {
-      if (error.message && error.message.includes('Captcha')) {
-        setMessage({ text: 'Por favor, complete o captcha para continuar.', type: 'erro' });
-      } else if (error.message && error.message.includes('Duplicate')) {
+      if (error.message && error.message.includes('Duplicate')) {
         setMessage({ text: 'Já existe um usuário cadastrado com os dados fornecidos.', type: 'erro' });
+      } else if (error.message && error.message.includes('Unauthorized')) {
+        setMessage({ text: 'Erro: ' + ('Acesso não autorizado.'), type: 'erro' });
       } else {
-        setMessage({ text: error.message || 'Erro ao realizar cadastro.', type: 'erro' });
+        setMessage({ text: 'Erro de conexão com o servidor.', type: 'erro' });
       }
     } finally {
       if (captchaRef.current && captchaRef.current.resetCaptcha) captchaRef.current.resetCaptcha();
@@ -96,28 +133,54 @@ export default function AccountMangement({ aoVoltarLogin }) {
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="input-group">
             <label htmlFor="name">Nome Completo</label>
-            <input id="name" type="text" placeholder="Ex: João da Silva" required className="login-input"
-              onChange={e => setFormData({ ...formData, name: e.target.value })} disabled={loading} />
+            <input 
+              id="name" 
+              type="text" 
+              placeholder="Ex: João da Silva" 
+              required 
+              className="login-input"
+              value={formData.name}
+              onChange={e => setFormData({ ...formData, name: e.target.value })} disabled={loading} 
+            />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
             <div className="input-group">
               <label htmlFor="registration_number">Matrícula</label>
-              <input id="registration_number" type="text" placeholder="000000" required className="login-input"
-                onChange={e => setFormData({ ...formData, registration_number: e.target.value })} disabled={loading} />
+              <input 
+                id="registration_number" 
+                type="text" placeholder="Somente Números" 
+                required 
+                className="login-input"
+                value={formData.registration_number}
+                onChange={e => setFormData({ ...formData, registration_number: e.target.value })} disabled={loading} 
+              />
             </div>
 
             <div className="input-group">
               <label htmlFor="password">Criar Senha</label>
-              <input id="password" type="password" placeholder="••••••••" required className="login-input"
-                onChange={e => setFormData({ ...formData, password: e.target.value })} disabled={loading} />
+              <input 
+                id="password" 
+                type="password" 
+                required 
+                className="login-input"
+                value={formData.password}
+                onChange={e => setFormData({ ...formData, password: e.target.value })} disabled={loading} 
+              />
             </div>
           </div>
 
           <div className="input-group">
             <label htmlFor="email">E-mail Institucional</label>
-            <input id="email" type="email" placeholder="nome@canela.rs.gov.br" required className="login-input"
-              onChange={e => setFormData({ ...formData, email: e.target.value })} disabled={loading} />
+            <input 
+              id="email" 
+              type="email" 
+              placeholder="nome@canela.rs.gov.br" 
+              required 
+              className="login-input"
+              value={formData.email}
+              onChange={e => setFormData({ ...formData, email: e.target.value })} disabled={loading} 
+            />
           </div>
 
           <div className="input-group">
@@ -128,6 +191,15 @@ export default function AccountMangement({ aoVoltarLogin }) {
               {secretaries.map(sec => (
                 <option key={sec.id} value={sec.id}>{sec.name}</option>
               ))}
+            </select>
+          </div>
+          <div className="input-group">
+            <label htmlFor="profile">Perfil do Usuário</label>
+            <select id="profile" required className="login-input" value={formData.profile}
+              onChange={e => setFormData({ ...formData, profile: e.target.value })} disabled={loading}>
+              <option value="1">Comum</option>
+              <option value="2">Gestor</option>
+              <option value="3">Administrador</option>
             </select>
           </div>
           <button type="submit" className="btn-primario btn-login" style={{ marginTop: '10px' }} disabled={loading}>
