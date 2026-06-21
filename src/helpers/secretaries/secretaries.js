@@ -2,6 +2,8 @@ import { getToken, isTokenExpired, refreshTokenRequest } from "../authentication
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8443';
 
+
+//Get the secretaries list
 export const getSecretaries = async () => {
   let token = getToken();
   if (!token) throw new Error('Usuário não autenticado');
