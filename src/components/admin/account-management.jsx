@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { adminRegisterUser } from '../../helpers/users/users';
 import { LoadingOverlay } from '../common/loader/loader';
 import './account-management.css';
+import './account-edit.css';
 import { getSecretaries } from '../../helpers/secretaries/secretaries';
 
 export default function AccountMangement({ aoVoltarLogin }) {
@@ -92,12 +93,19 @@ export default function AccountMangement({ aoVoltarLogin }) {
   };
 
   return (
-    <div className="login-page-wrapper">
-      <div className="login-card" style={{ maxWidth: '560px' }}>
+    <>
+    <div className="account-edit-root">
+      <div>
+        <div className="cabecalho-lista">
+          <h2>Cadastrar novas contas de usuários</h2>
+        </div>
+      </div>
+    </div>
+      <div className="card account-edit-card" style={{ maxWidth: '560px' }}>
         <div className="login-header">
-          <div className="logo-placeholder">📝</div>
+          {/*<div className="logo-placeholder">📝</div>
           <h2>Cadastro de Novo Servidor</h2>
-          <p>Cadastro de novo servidor com acesso ao sistema</p>
+          <p>Cadastro de novo servidor com acesso ao sistema</p>*/}
         </div>
 
         {message.text && (
@@ -184,6 +192,6 @@ export default function AccountMangement({ aoVoltarLogin }) {
         </form>
         <LoadingOverlay loading={loading} />
       </div>
-    </div>
+    </>
   );
 }
