@@ -9,6 +9,7 @@ import ProfileError from './components/login/profile-error';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import EditAccount from './components/edit-account/edit-account';
 import ValidationAccounts from './components/validation-accounts/validation-accounts';
+import AccountEditUserSelected from './components/admin/account-edit-user-selected';
 import './App.css'
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path='/profile-error' element={<ProfileError />} />
         <Route path='/edit-account' element={<ProtectedRoute><EditAccount /></ProtectedRoute>} />
         <Route path='/validation-accounts' element={<ValidationAccounts />} />
+        <Route path='/account-edit-user-selected' element={<ProtectedRoute><AccountEditUserSelected /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );
