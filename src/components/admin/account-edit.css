@@ -1,0 +1,166 @@
+/* Estilos extraídos de account-edit.jsx */
+.account-edit-root {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.cabecalho-lista {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.linha-separadora {
+  border-top: 1px solid #e2e8f0;
+  margin: 20px 0;
+}
+
+.search-input {
+  max-width: 100%;
+}
+
+.tabela-container {
+  overflow-x: auto;
+}
+
+.tabela-solicitacoes {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela-solicitacoes th,
+.tabela-solicitacoes td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+.tabela-solicitacoes th:last-child,
+.tabela-solicitacoes td:last-child {
+  text-align: center;
+}
+
+.selected-row {
+  background-color: #ebf8ff;
+}
+
+.badge.status-pendente {
+  background-color: #edf2f7;
+  color: #4a5568;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.empty-row {
+  text-align: center;
+  padding: 20px;
+  color: #7f8c8d;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.card.account-edit-card {
+  /*border-top: 4px solid #3182ce;*/
+  text-align: left;
+  padding: 20px;
+  background: #fff;
+  border-radius: 6px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.card-header h3 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.edit-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #2d3748;
+}
+
+.login-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.select-input {
+  appearance: none;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn-secundario {
+  background: transparent;
+  border: 1px solid #cbd5e0;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-primario {
+  background: #3182ce;
+  color: #fff;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.alert {
+  padding: 10px 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+@media (max-width: 720px) {
+  .edit-form-grid {
+    grid-template-columns: 1fr;
+  }
+}

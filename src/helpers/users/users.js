@@ -2,6 +2,31 @@ import { getAuthHeaders, getToken, setSession, getUser, getUserFromToken, isToke
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8443';
 
+//Fucão para carregar constas e usuários (apenas para admin)
+export async function fetchAllUsers() {
+  let token = getToken();
+  if (!token) throw new Error('Usuário não autenticado');
+
+  // Verifica se o token está expirado e tenta renovar
+  if (isTokenExpired(token)) {
+    try {
+      const data = await refreshTokenRequest();
+      token = data.accessToken;
+    } catch (err) {
+      throw new Error('Token expirado. Usuário deve reautenticar.');
+    }
+  }
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/users/`, {
+      headers: getAuthHeaders()
+    });
+    return res;
+  } catch (error) {
+    throw new Error('Erro ao buscar usuários: ' + error.message);
+  }
+};
+
 //Função para cadastrar um novo usuário (servidor)
 export async function registerUser(userData) {
   try {
@@ -82,6 +107,7 @@ export async function fetchUserByToken() {
 }
 
 // Nova função para atualizar o perfil do usuário
+//Essa função deve ser usada quano o prório usuário que está logado tenta atualizar seu perfil.
 export async function updateUserProfile(updates) {
   let token = getToken();
   if (!token) throw new Error('Usuário não autenticado');
@@ -115,6 +141,41 @@ export async function updateUserProfile(updates) {
   setSession(getToken(), updatedUser);
   return response;
 };
+
+//Função para atualizar contas de usuários via painel administrativo
+export const updateUserAccountByAdmin = async (updates) => {
+  //TODO: Criar a lódgica para atualizar contas de usuário quando disponível na API.
+  let token = getToken();
+  if (!token) throw new Error('Usuário não autenticado');
+
+  //Verifica se o token está expirado e tenta renovar
+  if (isTokenExpired(token)){
+    try{
+      const data = await refreshTokenRequest();
+      token = data.accsessToken;
+    }
+    catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  //Tenta realizar a atualização do cadastro de usuário
+  const response = await fetch(`${API_BASE_URL}/users/${updates.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders()
+    },
+    body: JSON.stringify(updates)
+  });
+
+  if (!response.ok) {
+    
+    throw new Error('Erro ao atualizar perfil.');
+  }
+  return response;
+};
+
 
 // Função para alterar a senha do usuário
 export async function changeUserPassword(newPassword) {

@@ -10,7 +10,7 @@ import {
 } from '../../helpers/authentication';
 import SecretaryManagement from './secretary-management';
 import AdminInstructions from './AdminInstructions';
-import EditAccount from '../edit-account/edit-account';
+import AccountEdit from "./account-edit";
 import ValidationAccounts from '../validation-accounts/validation-accounts';
 import AccountMangement from './account-management';
 
@@ -52,7 +52,7 @@ export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
         case 'usuarios': return (
         <div>
             {activeUserSubmenu === 'cadastrar' && <AccountMangement />}
-            {activeUserSubmenu === 'editar' && <EditAccount />}
+            {activeUserSubmenu === 'editar' && <AccountEdit />}
             {activeUserSubmenu === 'validar' && <ValidationAccounts />}
             {activeUserSubmenu === 'ativar' && (
             <div>
