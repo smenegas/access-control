@@ -13,6 +13,7 @@ import AdminInstructions from './AdminInstructions';
 import AccountEdit from "./account-edit";
 import ValidationAccounts from '../validation-accounts/validation-accounts';
 import AccountMangement from './account-management';
+import { AccountActivate } from "./account-activate";
 
 export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
     
@@ -54,12 +55,7 @@ export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
             {activeUserSubmenu === 'cadastrar' && <AccountMangement />}
             {activeUserSubmenu === 'editar' && <AccountEdit />}
             {activeUserSubmenu === 'validar' && <ValidationAccounts />}
-            {activeUserSubmenu === 'ativar' && (
-            <div>
-                <h3>Ativar Contas</h3>
-                <p>Funcionalidade de ativação em construção. Será possível ativar contas existentes aqui.</p>
-            </div>
-            )}
+            {activeUserSubmenu === 'ativar' && <AccountActivate />}
             {activeUserSubmenu === 'inativar' && (
             <div>
                 <h3>Inativar Contas</h3>

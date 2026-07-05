@@ -231,6 +231,54 @@ export const fetchPendingAccounts = async () => {
   }
 };
 
+//Function to fetch users acounts that is pending and rejected (only for admin)
+export const fetchPendingAndRejectedAccounts = async () => {
+  let token = getToken();
+  if (!token) throw new Error('Usuário não autenticado');
+
+  if (isTokenExpired(token)) {
+    //Tentar renovar o token
+    try {
+      const data = await refreshTokenRequest();
+      token = data.accessToken;
+    } catch (err) {
+      throw new Error(err);
+    }
+   }
+  try {
+    const res = await fetch(`${API_BASE_URL}/users/pending-rejected`, {
+      headers: getAuthHeaders()
+    });
+    return res;
+  } catch (error) {
+    throw new Error('Erro ao buscar contas pendentes e rejeitadas.');
+  }
+};
+
+//Function to fetch users acounts that is disbled (only for admin)
+export const fetchDisabledAccounts = async () => {
+  let token = getToken();
+  if (!token) throw new Error('Usuário não autenticado');
+
+  if (isTokenExpired(token)) {
+    //Tentar renovar o token
+    try {
+      const data = await refreshTokenRequest();
+      token = data.accessToken;
+    } catch (err) {
+      throw new Error(err);
+    }
+   }
+  try {
+    const res = await fetch(`${API_BASE_URL}/users/disabled`, {
+      headers: getAuthHeaders()
+    });
+    return res;
+  } catch (error) {
+    throw new Error('Erro ao buscar contas desativadas.');
+  }
+};
+
 //Função para rejeitar uma conta (apenas para admin)
 export const rejectUserAccount = async (userId) => {
   let token = getToken();
