@@ -6,6 +6,7 @@
   padding: 10px;
   border-radius: 5px;
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .warning-message {
@@ -15,6 +16,7 @@
   padding: 10px;
   border-radius: 5px;
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .success-message {
@@ -24,6 +26,7 @@
   padding: 10px;
   border-radius: 5px;
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .error-message-btn {
