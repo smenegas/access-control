@@ -24,6 +24,10 @@ export async function login({ email, password }) {
     throw new Error('Resposta de autenticação inválida.');
   }
 
+  if(data.user.account_status !== 1) {
+    throw new Error('Conta de usuário não está ativa. Por favor, entre em contato com o administrador.');
+  }
+
   setSession(data.accessToken, data.user || null);
   setRefreshToken(data.refreshToken);
   return data;
