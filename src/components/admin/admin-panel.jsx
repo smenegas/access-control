@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AdminMain from './admin-main';
 import AdminSidebar from './admin-sidebar';
-import { logout, getUser } from '../../helpers/authentication';
+import { logout, getUser, isTokenExpired, getToken } from '../../helpers/authentication';
 
 // Importe os outros futuramente: GestaoPastas, GestaoMenus, GestaoUsuarios...
 import './admin-panel.css'; // Estilos específicos para o painel admin
@@ -12,7 +12,12 @@ export default function AdminPanel() {
   const [activeUserSubmenu, setActiveUserSubmenu] = useState('cadastrar');
   const navigate = useNavigate();
   const user = getUser();
+  const locacation = useLocation(); //Monitoring the user routes
 
+  useEffect(() => {
+    if (isTokenExpired(getToken())) handleLogout();
+  }, [location]);
+  
   const handleLogout = () => {
     logout();
     navigate('/');
