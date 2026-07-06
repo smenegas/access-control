@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { fetchDisabledAccounts } from '../../helpers/users/users';
+import { fetchDisabledAccounts, activateUserAccount } from '../../helpers/users/users';
 
 import './account-edit.css';
 import '../common/messages.css';
@@ -69,6 +69,23 @@ export const AccountActivate = ({user = null}) => {
         }
     }
     
+    // Function to handle the activation of a user account.
+    const activateAccount = async (userId, userName) => {
+        try {
+            let res = await activateUserAccount(userId);
+            if (!res.ok) {
+                const errorData = await res.json();
+                setMsg({ text: 'Erro ao ativar a conta.', type: 'error' });
+                throw new Error(errorData.message || 'Erro ao ativar a conta.');
+            }
+            setMsg({ text: `A Conta do usuário ${userName} foi ativada com sucesso!`, type: 'success' });
+            // Reload the users list after activation
+            await loadUsers();
+        } catch (e) {
+            setMsg({ text: 'Houve um erro ao ativar a conta.', type: 'error' });
+            throw new Error(e.message);
+        }
+    };
 
     return (
         <>
@@ -122,7 +139,7 @@ export const AccountActivate = ({user = null}) => {
                   <td>
                     <button 
                       className="btn-secundario" 
-                      onClick={() => userToEdit(user)}
+                      onClick={() => activateAccount(user.id, user.name)}
                     >
                       ✅ Ativar Conta
                     </button>

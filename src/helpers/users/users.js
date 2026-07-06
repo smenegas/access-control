@@ -279,6 +279,31 @@ export const fetchDisabledAccounts = async () => {
   }
 };
 
+//Function to activate a user account (only for admin)
+export const activateUserAccount = async (userId) => {
+  let token = getToken();
+  if (!token) throw new Error('Usuário não autenticado');
+
+  if (isTokenExpired(token)) {
+    //Tentar renovar o token
+    try {
+      const data = await refreshTokenRequest();
+      token = data.accessToken;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+  try {
+    const res = await fetch(`${API_BASE_URL}/users/${userId}/activate`, {
+      method: 'PUT',
+      headers: getAuthHeaders()
+    });
+    return res;
+  } catch (error) {
+    throw new Error('Erro ao ativar conta.');
+  }
+};
+
 //Função para rejeitar uma conta (apenas para admin)
 export const rejectUserAccount = async (userId) => {
   let token = getToken();
