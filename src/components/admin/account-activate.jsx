@@ -46,8 +46,9 @@ export const AccountActivate = ({user = null}) => {
     return filteredUsers.slice(start, start + perPage);
     }, [filteredUsers, currentPage, perPage]);
 
-    const handleBuscar = () => {
-
+    const handleBuscar = (e) => {
+      setSearch(e.target.value);
+      setCurrentPage(1); // Reseta para a primeira página ao buscar
     }
 
     // Function for loading the list of users that are the disabled accounts.
