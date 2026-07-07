@@ -14,6 +14,7 @@ import AccountEdit from "./account-edit";
 import ValidationAccounts from '../validation-accounts/validation-accounts';
 import AccountMangement from './account-management';
 import { AccountActivate } from "./account-activate";
+import { AccountDisable } from "./account-disable";
 
 export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
     
@@ -56,12 +57,7 @@ export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
             {activeUserSubmenu === 'editar' && <AccountEdit />}
             {activeUserSubmenu === 'validar' && <ValidationAccounts />}
             {activeUserSubmenu === 'ativar' && <AccountActivate />}
-            {activeUserSubmenu === 'inativar' && (
-            <div>
-                <h3>Inativar Contas</h3>
-                <p>Funcionalidade de inativação em construção. Lista de usuários para inativar aparecerá aqui.</p>
-            </div>
-            )}
+            {activeUserSubmenu === 'inativar' && <AccountDisable />}
             {activeUserSubmenu === 'redefinir' && (
             <div>
                 <h3>Redefinir Senha</h3>

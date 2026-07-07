@@ -27,6 +27,32 @@ export async function fetchAllUsers() {
   }
 };
 
+//Function to disable a user account (only for admin)
+export const disableUserAccount = async (userId) => {
+  let token = getToken();
+  if (!token) throw new Error('Usuário não autenticado');
+
+  // Verifica se o token está expirado e tenta renovar
+  if (isTokenExpired(token)) {
+    try {
+      const data = await refreshTokenRequest();
+      token = data.accessToken;
+    } catch (err) {
+      throw new Error('Token expirado. Usuário deve reautenticar.');
+    }
+  }
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/users/${userId}/disable`, {
+      method: 'PUT',
+      headers: getAuthHeaders()
+    });
+    return res;
+  } catch (error) {
+    throw new Error('Erro ao desativar conta: ' + error.message);
+  }
+};
+
 //Função para cadastrar um novo usuário (servidor)
 export async function registerUser(userData) {
   try {
