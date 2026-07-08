@@ -11,10 +11,10 @@ import {
 import SecretaryManagement from './secretary-management';
 import AdminInstructions from './AdminInstructions';
 import AccountEdit from "./account-edit";
-import ValidationAccounts from '../validation-accounts/validation-accounts';
 import AccountMangement from './account-management';
 import { AccountActivate } from "./account-activate";
 import { AccountDisable } from "./account-disable";
+import { AccountValidate } from "./account-validate";
 
 export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
     
@@ -55,9 +55,9 @@ export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
         <div>
             {activeUserSubmenu === 'cadastrar' && <AccountMangement />}
             {activeUserSubmenu === 'editar' && <AccountEdit />}
-            {activeUserSubmenu === 'validar' && <ValidationAccounts />}
             {activeUserSubmenu === 'ativar' && <AccountActivate />}
             {activeUserSubmenu === 'inativar' && <AccountDisable />}
+            {activeUserSubmenu === 'validar' && <AccountValidate />}
             {activeUserSubmenu === 'redefinir' && (
             <div>
                 <h3>Redefinir Senha</h3>
