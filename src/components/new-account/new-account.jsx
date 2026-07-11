@@ -99,7 +99,7 @@ export default function NewAccount({ aoVoltarLogin }) {
             <div className="input-group">
               <label htmlFor="password">Criar Senha</label>
               <input 
-                id="password" type="password" placeholder="••••••••" required
+                id="password" type="password" required
                 className="login-input"
                 onChange={e => setFormData({...formData, password: e.target.value})} 
                 disabled={loading}
@@ -108,7 +108,7 @@ export default function NewAccount({ aoVoltarLogin }) {
           </div>
 
           <div className="input-group">
-            <label htmlFor="email">E-mail Institucional</label>
+            <label htmlFor="email">E-mail</label>
             <input 
               id="email" type="email" placeholder="nome@canela.rs.gov.br" required
               className="login-input"
