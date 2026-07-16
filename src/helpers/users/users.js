@@ -269,7 +269,7 @@ export async function changeUserPasswordAdmin(userId, newPassword) {
   const hasNumber = /[0-9]/.test(newPassword);
 
   if (!hasUpperCase || !hasLowerCase || !hasNumber) {
-    throw new Error('A nova senha deve conter pelo menos uma letra maiúscula, uma letra minúscula e um número.');
+    throw new Error('A nova senha deve conter pelo menos 8 caracteres, uma letra maiúscula, uma letra minúscula e um número.');
   }
 
   // Verifica se o usuário que está tentando redefinir a senha é um administrador
