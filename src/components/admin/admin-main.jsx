@@ -15,6 +15,7 @@ import AccountMangement from './account-management';
 import { AccountActivate } from "./account-activate";
 import { AccountDisable } from "./account-disable";
 import { AccountValidate } from "./account-validate";
+import { ResetPassword } from "./reset-password";
 
 export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
     
@@ -58,12 +59,7 @@ export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
             {activeUserSubmenu === 'ativar' && <AccountActivate />}
             {activeUserSubmenu === 'inativar' && <AccountDisable />}
             {activeUserSubmenu === 'validar' && <AccountValidate />}
-            {activeUserSubmenu === 'redefinir' && (
-            <div>
-                <h3>Redefinir Senha</h3>
-                <p>Ferramenta para redefinir a senha de usuários (em construção).</p>
-            </div>
-            )}
+            {activeUserSubmenu === 'redefinir' && (<ResetPassword />)}
         </div>
         );
         default: return (
