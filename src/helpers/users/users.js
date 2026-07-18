@@ -217,6 +217,31 @@ export async function changeUserPassword(newPassword) {
       throw new Error(err);
     }
   }
+
+  // Verifica se um id de usuário foi fornecido
+  if (!userId) {
+    throw new Error('ID do usuário não fornecido.');
+  }
+
+  // Verifica se uma nova senha foi fornecida
+  if (!newPassword) {
+    throw new Error('Nova senha não fornecida.');
+  }
+
+  //Verifica se a nova senha atende aos critérios de segurança (exemplo: mínimo de 8 caracteres)
+  if (newPassword.length < 8) {
+    throw new Error('A nova senha deve ter pelo menos 8 caracteres.');
+  }
+
+  //Verifica se a nova senha contém pelo menos uma letra maiúscula, uma letra minúscula e um número
+  const hasUpperCase = /[A-Z]/.test(newPassword);
+  const hasLowerCase = /[a-z]/.test(newPassword);
+  const hasNumber = /[0-9]/.test(newPassword);
+
+  if (!hasUpperCase || !hasLowerCase || !hasNumber) {
+    throw new Error('A nova senha deve conter pelo menos 8 caracteres, uma letra maiúscula, uma letra minúscula e um número.');
+  }
+  
   // Faz a requisição para alterar a senha
   const response = await fetch(`${API_BASE_URL}/users/${getUser().id}/password`, {
     method: 'PUT',
