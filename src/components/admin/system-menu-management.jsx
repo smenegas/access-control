@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import SystemModuleAdd from './system-module-add';
 import SystemModuleEdit from './system-module-edit';
+import SystemMenuAdd from './system-menu-add';
+import { AddMenuItem }  from '../../helpers/system-menu/system-menu';
 
 import './system-menu-management.css';
 import '../common/messages.css';
-import SystemMenuAdd from './system-menu-add';
 
 //TODO: Mudar o código para que os nomes de variávies e funções estejam em inglês.
-//TODO: Passar os estilos para um arquivo CSS separado, para manter o código mais limpo e organizado.
 // Componente Recursivo para desenhar a árvore de edição
 const BuildMenuTree = ({ menu, activeNode, selectToEdit, addChildren, prepareToAddChildren }) => {
   const isSelected = activeNode?.id === menu?.id;
@@ -84,6 +84,7 @@ export default function SystemMenuManagement() {
   const [planeList, setPlaneList] = useState([]);
   
   // Estado do formulário de cadastro/edição
+  const [errorMessage, setErrorMessage] = useState({type: '', message: ''});
   const [typeOfNode, setTypeOfNode] = useState(''); // 'module' or 'menu'
   const [mode, setMode] = useState(''); // 'add' or 'edit'
   const [Id, setId] = useState(0);
@@ -92,7 +93,7 @@ export default function SystemMenuManagement() {
     id: null,
     name: '',
     father_menu_id: '',
-    order: moduleOrder
+    menu_order: moduleOrder
   });
 
   const getToken = () => sessionStorage.getItem('@AppAcessos:token');
@@ -105,6 +106,7 @@ export default function SystemMenuManagement() {
     //TODO: Implementar a lógica para carregar os menus do backend e atualizar o estado menuTree e planeList
   };
 
+  //TODO: Verriifcar a utilidade desta função, pois ela não está sendo usada no momento.
   // Transforma a árvore de volta em lista plana para popular o <select> do Menu Pai
   const convertToFlatList = (nodos) => {
     let array = [];
@@ -125,7 +127,7 @@ export default function SystemMenuManagement() {
       id: Id, 
       name: '', 
       father_menu_id: '', 
-      order: moduleOrder
+      menu_order: moduleOrder
     });
     focarFormulario();
   };
@@ -138,7 +140,7 @@ export default function SystemMenuManagement() {
       id: Id, 
       name: '', 
       father_menu_id: itemPai.id, 
-      order: (itemPai.childrens?.length || 0) + 1 
+      menu_order: (itemPai.childrens?.length || 0) + 1 
     });
     focarFormulario();
   };
@@ -151,7 +153,7 @@ export default function SystemMenuManagement() {
       id: menu.id,
       name: menu.name,
       father_menu_id: menu.father_menu_id || '',
-      order: menu.order || 1
+      menu_order: menu.menu_order || 1
     });
     focarFormulario();
   };
@@ -172,15 +174,15 @@ export default function SystemMenuManagement() {
   };
 
   // Recusive function to add a child menu item to the correct parent in the tree
-  const addChild = async (nodes) => {
+  const addChild = async (nodes, createdId) => {
     for (let node of nodes) {
       if (node.id === formData.father_menu_id) {
         //node.childrens = node.childrens || [];
-        node.childrens.push({ ...formData, childrens: [] });
+        node.childrens.push({ ...formData, id: createdId, childrens: [] });
         return true; // Child added
       }
       if (node.childrens && node.childrens.length > 0) {
-        if ( await addChild(node.childrens)) return true; // Recurse
+        if ( await addChild(node.childrens, createdId)) return true; // Recurse
       }
     }
     return false; // Not found
@@ -188,30 +190,50 @@ export default function SystemMenuManagement() {
 
   // Add new menu item to the tree
   const addMenuItemToTree = async () => {
-    if (formData.father_menu_id === '') {
-      // If it's a root module, add it to the root of the tree
-      setMenuTree(prevTree => [...prevTree, { ...formData, childrens: [] }]);
-      prepareNewRootModule(); // Reset form for next entry
-      setMode('');
-      setModuleOrder(prevOrder => prevOrder + 1); // Increment order for next root module
-    } else {
-      // If it's a submenu.
-      const updatedTree = [...menuTree];
-      //setId(prevId => prevId + 1);
-      //updatedTree.id = Id;
-      await addChild(updatedTree);
-      setMenuTree(updatedTree);
-      prepareToAddChildren({ id: formData.father_menu_id, name: '', childrens: [] }); // Reset form for next entry
-      setMode('');
+    try {
+      const createdId = await AddMenuItem(formData);
+
+      if (createdId === null || createdId === undefined) {
+        throw new Error(
+          typeOfNode === 'module'
+            ? 'Erro ao adicionar módulo principal.'
+            : 'Erro ao adicionar item de menu.'
+        );
+      }
+
+      if (formData.father_menu_id === '') {
+        // If it's a root module, add it to the root of the tree
+        setMenuTree(prevTree => [...prevTree, { ...formData, id: createdId, childrens: [] }]);
+        prepareNewRootModule(); // Reset form for next entry
+        setMode('');
+        setModuleOrder(prevOrder => prevOrder + 1); // Increment order for next root module
+        setErrorMessage({type: 'success', message: 'Módulo principal adicionado com sucesso.'});
+      } else {
+        // If it's a submenu.
+        const updatedTree = [...menuTree];
+        //setId(prevId => prevId + 1);
+        //updatedTree.id = Id;
+        await addChild(updatedTree, createdId);
+        setMenuTree(updatedTree);
+        prepareToAddChildren({ id: formData.father_menu_id, name: '', childrens: [] }); // Reset form for next entry
+        setMode('');
+        setErrorMessage({type: 'success', message: 'Item de menu adicionado com sucesso.'});
+      }
+      setPlaneList(convertToFlatList(menuTree));
+    } catch (error) {
+      setErrorMessage({
+        type: 'error',
+        message: error.message || 'Erro ao adicionar item de menu.'
+      });
     }
-    setPlaneList(convertToFlatList(menuTree));
   };
 
   // Cancel operation and reset the form
   const cancelOperation = () => {
     setMode('');
     setTypeOfNode('');
-    setFormData({ id: null, name: '', father_menu_id: '', order: 1 });
+    setErrorMessage({type: '', message: ''});
+    setFormData({ id: null, name: '', father_menu_id: '', menu_order: 1 });
   };
 
   return (
@@ -238,23 +260,30 @@ export default function SystemMenuManagement() {
               + Módulo Principal
             </button>
         </div>
+        {errorMessage.message && errorMessage.type === 'error' && (
+          <div className={`message ${errorMessage.type === 'error' ? 'error-message' : 'success-message'}`}>
+            {errorMessage.message}
+          </div>
+        )}
         {menuTree.length === 0 ? (
           <div className="warning-message">
             <p>Nenhum módulo cadastrado. Clique no botão acima para criar o primeiro.</p>
           </div>
         ) : (
-          <div className="card menu-tree-card">
-            {menuTree.map(item => (
-              <BuildMenuTree
-                key={item.id}
-                menu={item}
-                activeNode={formData}
-                selectToEdit={prepareToEdit}
-                addChildren={addChild}
-                prepareToAddChildren={prepareToAddChildren}
-              />
-            ))}
-          </div>
+          <>
+            <div className="card menu-tree-card">
+              {menuTree.map(item => (
+                <BuildMenuTree
+                  key={item.id}
+                  menu={item}
+                  activeNode={formData}
+                  selectToEdit={prepareToEdit}
+                  addChildren={addChild}
+                  prepareToAddChildren={prepareToAddChildren}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
 

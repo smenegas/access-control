@@ -49,8 +49,8 @@ export default function SystemMenuAdd({
             min="1"
             required 
             className="login-input"
-            value={formData.order}
-            onChange={e => setFormData({...formData, order: e.target.value})}
+            value={formData.menu_order}
+            onChange={e => setFormData({...formData, menu_order: e.target.value})}
             />
         </div>
 
