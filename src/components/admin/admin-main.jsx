@@ -16,6 +16,7 @@ import { AccountActivate } from "./account-activate";
 import { AccountDisable } from "./account-disable";
 import { AccountValidate } from "./account-validate";
 import { ResetPassword } from "./reset-password";
+import SystemMenuManagement from "./system-menu-management";
 
 export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
     
@@ -51,7 +52,7 @@ export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
         );
         case 'secretarias': return <SecretaryManagement />;
         case 'pastas': return <div>Gestão de Pastas de Rede (Em construção)</div>;
-        case 'modulos': return <div>Gestão de Módulos e Menus (Em construção)</div>;
+        case 'modulos': return (<SystemMenuManagement />);
         case 'usuarios': return (
         <div>
             {activeUserSubmenu === 'cadastrar' && <AccountMangement />}

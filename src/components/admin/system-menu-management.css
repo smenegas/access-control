@@ -1,0 +1,159 @@
+.cabecalho-lista {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.system-menu-management {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.menu-tree-card {
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-width: 700px;
+}
+
+.menu-tree-empty {
+  text-align: center;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+.menu-item-wrapper {
+  margin-top: 8px;
+}
+
+.menu-item-wrapper--nested {
+  margin-left: 24px;
+}
+
+.menu-item-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+}
+
+.menu-item-card--root {
+  border-left: 4px solid #2b6cb0;
+}
+
+.menu-item-card--child {
+  border-left: 1px solid #e2e8f0;
+}
+
+.menu-item-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.menu-item-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  margin: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #4a5568;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.menu-item-toggle-btn:hover {
+  background: rgba(66, 153, 225, 0.08);
+  color: #2b6cb0;
+}
+
+.menu-item-toggle-btn:focus {
+  outline: 2px solid rgba(66,153,225,0.25);
+  outline-offset: 2px;
+}
+
+.menu-item-label {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.menu-item-label--child {
+  font-weight: 400;
+}
+
+.menu-item-order-badge {
+  font-size: 11px;
+  color: #a0aec0;
+  background-color: #edf2f7;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.menu-item-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.menu-item-action-btn {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.menu-tree-children {
+  border-left: 1px dashed #cbd5e0;
+  margin-left: 12px;
+  padding-left: 4px;
+}
+
+.menu-form-card {
+  border-top: 4px solid #2b6cb0;
+  text-align: left;
+}
+
+.menu-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.menu-form-title {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.menu-form-delete-btn {
+  color: #c53030;
+  border-color: #feb2b2;
+}
+
+.menu-form-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 20px;
+}
+
+.menu-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+@media (max-width: 900px) {
+  .menu-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
