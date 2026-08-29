@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SystemModuleAdd from './system-module-add';
 import SystemModuleEdit from './system-module-edit';
 import SystemMenuAdd from './system-menu-add';
-import { AddMenuItem }  from '../../helpers/system-menu/system-menu';
+import { AddMenuItem, LoadMenuTree }  from '../../helpers/system-menu/system-menu';
 
 import './system-menu-management.css';
 import '../common/messages.css';
@@ -96,14 +96,25 @@ export default function SystemMenuManagement() {
     menu_order: moduleOrder
   });
 
-  const getToken = () => sessionStorage.getItem('@AppAcessos:token');
+  //const getToken = () => sessionStorage.getItem('@AppAcessos:token');
 
-  useEffect(() => {
-    carregarMenus();
+  useEffect(() => async function fetchData() {
+    await carregarMenus();
   }, []);
 
+  // Load the menu tree from the API and set it in state
   const carregarMenus = async () => {
-    //TODO: Implementar a lógica para carregar os menus do backend e atualizar o estado menuTree e planeList
+    setErrorMessage({type: '', message: ''});
+    try {
+      const menuTreeData = await LoadMenuTree();
+      setMenuTree(menuTreeData);
+    } catch (error) {
+      setErrorMessage({
+        type: 'error',
+        message: error.message || 'Erro ao carregar menus.'
+      });
+      console.error('Erro ao carregar menus:', error);
+    }
   };
 
   //TODO: Verriifcar a utilidade desta função, pois ela não está sendo usada no momento.

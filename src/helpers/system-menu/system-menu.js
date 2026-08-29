@@ -44,3 +44,41 @@ export const AddMenuItem = async ( formData ) => {
         throw new Error(error.message || 'Erro ao adicionar item de menu.');
     }
 };
+
+export const LoadMenuTree = async () => {
+    const token = getToken();
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8443';
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    };
+
+    if (!token) {
+        throw new Error('Usuário não autenticado');
+    }
+
+    if (isTokenExpired(token)) {
+        // Tentar renovar o token
+        try {
+            const data = await refreshTokenRequest();
+            requestOptions.headers['Authorization'] = `Bearer ${data.accessToken}`;
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/system-menus/menu-tree`, requestOptions);
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            throw new Error(responseData?.message || 'Erro ao carregar árvore de menu.');
+        }
+        return responseData;
+    } catch (error) {
+        throw new Error(error.message || 'Erro ao carregar árvore de menu.');
+    }
+};
