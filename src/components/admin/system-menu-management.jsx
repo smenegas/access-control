@@ -8,7 +8,7 @@ import './system-menu-management.css';
 import '../common/messages.css';
 
 //TODO: Mudar o código para que os nomes de variávies e funções estejam em inglês.
-// Componente Recursivo para desenhar a árvore de edição
+// Recusive component to build the menu tree structure
 const BuildMenuTree = ({ menu, activeNode, selectToEdit, addChildren, prepareToAddChildren }) => {
   const isSelected = activeNode?.id === menu?.id;
   const [expanded, setExpanded] = useState(true);
@@ -35,9 +35,9 @@ const BuildMenuTree = ({ menu, activeNode, selectToEdit, addChildren, prepareToA
           <span className={`menu-item-label ${menu?.father_menu_id !== '' ? 'menu-item-label--child' : ''}`}>
             {menu?.name}
           </span>
-          <span className="menu-item-order-badge">
+          {/*<span className="menu-item-order-badge">
             Ordem: {menu?.order || 1}
-          </span>
+          </span>*/}
         </div>
 
         <div className="menu-item-actions">
@@ -56,6 +56,19 @@ const BuildMenuTree = ({ menu, activeNode, selectToEdit, addChildren, prepareToA
             title="Editar este item"
           >
             ✏️ Editar
+          </button>
+          <button
+            type="button"
+            className="btn-secundario menu-item-action-btn"
+            title="Excluir este item"
+            onClick={() => {
+              if (window.confirm('Tem certeza que deseja excluir este item?')) {
+                // Call the delete function here
+                console.log(`Excluir item com ID: ${menu?.id}`);
+              }
+            }}
+          >
+            🗑️ Excluir
           </button>
         </div>
       </div>
@@ -157,8 +170,7 @@ export default function SystemMenuManagement() {
   };
 
   const prepareToEdit = (menu) => {
-    setTypeOfNode('menu');
-    setEditMode(true);
+    setTypeOfNode(menu.father_menu_id === '' ? 'module' : 'menu');
     setMode('edit');
     setFormData({
       id: menu.id,
