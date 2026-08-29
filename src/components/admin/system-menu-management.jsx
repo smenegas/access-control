@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import SystemModuleAdd from './system-module-add';
 import SystemModuleEdit from './system-module-edit';
 import SystemMenuAdd from './system-menu-add';
-import { AddMenuItem, LoadMenuTree }  from '../../helpers/system-menu/system-menu';
+import SystemMenuEdit from './system-menu-edit';
+import { AddMenuItem, LoadMenuTree, UpdateMenuItem }  from '../../helpers/system-menu/system-menu';
 
 import './system-menu-management.css';
 import '../common/messages.css';
@@ -251,6 +252,30 @@ export default function SystemMenuManagement() {
     }
   };
 
+  // Update an existing menu item in the tree
+  const updateMenuItemInTree = async () => {
+    try {
+      const updatedRows = await UpdateMenuItem(formData);
+      if (updatedRows === 0) {
+        setErrorMessage({
+          type: 'error',
+          message: 'Erro ao atualizar item.'
+        });
+        return;
+      }
+      // Update the item in the tree
+      const updatedTree = await LoadMenuTree(); // Reload the tree from the API to ensure consistency
+      setMenuTree(updatedTree);
+      setErrorMessage({type: 'success', message: 'Item atualizado com sucesso.'});
+      setMode('');
+    } catch (error) {
+      setErrorMessage({
+        type: 'error',
+        message: error.message || 'Erro ao atualizar item de menu.'
+      });
+    }
+  };
+
   // Cancel operation and reset the form
   const cancelOperation = () => {
     setMode('');
@@ -341,6 +366,16 @@ export default function SystemMenuManagement() {
           addMenuItemToTree={addMenuItemToTree}
           cancelOperation={cancelOperation}
         ></SystemMenuAdd>
+      )}
+
+      {mode === 'edit' && typeOfNode === 'menu' && (
+        <SystemMenuEdit
+          formData={formData}
+          setFormData={setFormData}
+          cancelOperation={cancelOperation}
+          prepareToEdit={prepareToEdit}
+          updateMenuItemInTree={updateMenuItemInTree}
+        ></SystemMenuEdit>
       )}
     </div>
   );
