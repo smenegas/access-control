@@ -23,7 +23,7 @@ const BuildMenuTree = ({
   return (
     <div className={`menu-item-wrapper ${menu?.father_menu_id ? 'menu-item-wrapper--nested' : ''}`}>
       <div
-        className={`menu-item-card ${menu?.father_menu_id === '' ? 'menu-item-card--root' : 'menu-item-card--child'}`}
+        className={`menu-item-card ${menu?.father_menu_id === '' || menu?.father_menu_id === null ? 'menu-item-card--root' : 'menu-item-card--child'}`}
         style={{ backgroundColor: isSelected ? '#ebf8ff' : '#ffffff', borderColor: isSelected ? '#3182ce' : '#e2e8f0' }}
       >
         <div className="menu-item-main">
@@ -38,7 +38,7 @@ const BuildMenuTree = ({
               {expanded ? '▼' : '▶'}
             </button>
           )}
-          <span>{menu?.father_menu_id === '' ? '📦' : '↳ 📄'}</span>
+          <span>{menu?.father_menu_id === '' || menu?.father_menu_id === null ? '📦' : '↳ 📄'}</span>
           <span className={`menu-item-label ${menu?.father_menu_id !== '' ? 'menu-item-label--child' : ''}`}>
             {menu?.name}
           </span>
@@ -112,14 +112,12 @@ export default function SystemMenuManagement() {
     menu_order: moduleOrder
   });
 
-  //const getToken = () => sessionStorage.getItem('@AppAcessos:token');
-
   useEffect(() => async function fetchData() {
-    await carregarMenus();
+    await loadMenus();
   }, []);
 
   // Load the menu tree from the API and set it in state
-  const carregarMenus = async () => {
+  const loadMenus = async () => {
     setErrorMessage({type: '', message: ''});
     try {
       const menuTreeData = await LoadMenuTree();
