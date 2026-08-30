@@ -3,14 +3,20 @@ import SystemModuleAdd from './system-module-add';
 import SystemModuleEdit from './system-module-edit';
 import SystemMenuAdd from './system-menu-add';
 import SystemMenuEdit from './system-menu-edit';
-import { AddMenuItem, LoadMenuTree, UpdateMenuItem }  from '../../helpers/system-menu/system-menu';
+import { AddMenuItem, LoadMenuTree, UpdateMenuItem, DeleteMenuItem }  from '../../helpers/system-menu/system-menu';
 
 import './system-menu-management.css';
 import '../common/messages.css';
 
 //TODO: Mudar o código para que os nomes de variávies e funções estejam em inglês.
 // Recusive component to build the menu tree structure
-const BuildMenuTree = ({ menu, activeNode, selectToEdit, addChildren, prepareToAddChildren }) => {
+const BuildMenuTree = ({ 
+  menu, 
+  activeNode, 
+  selectToEdit, 
+  addChildren, 
+  prepareToAddChildren,
+  deleteMenu }) => {
   const isSelected = activeNode?.id === menu?.id;
   const [expanded, setExpanded] = useState(true);
 
@@ -62,12 +68,7 @@ const BuildMenuTree = ({ menu, activeNode, selectToEdit, addChildren, prepareToA
             type="button"
             className="btn-secundario menu-item-action-btn"
             title="Excluir este item"
-            onClick={() => {
-              if (window.confirm('Tem certeza que deseja excluir este item?')) {
-                // Call the delete function here
-                console.log(`Excluir item com ID: ${menu?.id}`);
-              }
-            }}
+            onClick={() => {deleteMenu(menu.id);}}
           >
             🗑️ Excluir
           </button>
@@ -85,6 +86,7 @@ const BuildMenuTree = ({ menu, activeNode, selectToEdit, addChildren, prepareToA
               selectToEdit={selectToEdit}
               addChildren={addChildren}
               prepareToAddChildren={prepareToAddChildren}
+              deleteMenu={deleteMenu}
             />
           ))}
         </div>
@@ -276,6 +278,58 @@ export default function SystemMenuManagement() {
     }
   };
 
+  // Function to handle the deletion of a menu item
+  const deleteMenuItemFromTree = async (id) => {
+    // Confirm if the item has children before deletion
+    const itemToDelete = findMenuItemById(menuTree, id);
+    if (itemToDelete?.childrens && itemToDelete.childrens.length > 0) {
+      setErrorMessage({
+        type: 'error',
+        message: 'Não é possível excluir um item que possui submenus. Exclua os submenus primeiro.'
+      });
+      return;
+    }
+
+    if (!window.confirm('Tem certeza que deseja excluir este item?')) {
+      return; // User canceled the deletion
+    }
+    try {
+      // Call the API to delete the item
+      const deletedRows = await DeleteMenuItem(id);
+      if (deletedRows === 0) {
+        setErrorMessage({
+          type: 'error',
+          message: 'Erro ao excluir item.'
+        });
+        return;
+      }
+      // Reload the tree from the API to ensure consistency
+      const updatedTree = await LoadMenuTree();
+      setMenuTree(updatedTree);
+      setErrorMessage({type: 'success', message: 'Item excluído com sucesso.'});
+      setMode('');
+    } catch (error) {
+      setErrorMessage({
+        type: 'error',
+        message: error.message || 'Erro ao excluir item de menu.'
+      });
+    }
+  };
+
+  // Find a menu item by its ID in the tree
+  const findMenuItemById = (nodes, id) => {
+    for (let node of nodes) {
+      if (node.id === id) {
+        return node;
+      }
+      if (node.childrens && node.childrens.length > 0) {
+        const found = findMenuItemById(node.childrens, id);
+        if (found) return found;
+      }
+    }
+    return null; // Not found
+  };
+
   // Cancel operation and reset the form
   const cancelOperation = () => {
     setMode('');
@@ -328,6 +382,7 @@ export default function SystemMenuManagement() {
                   selectToEdit={prepareToEdit}
                   addChildren={addChild}
                   prepareToAddChildren={prepareToAddChildren}
+                  deleteMenu={deleteMenuItemFromTree}
                 />
               ))}
             </div>
