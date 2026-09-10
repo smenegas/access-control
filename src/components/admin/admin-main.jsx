@@ -17,6 +17,7 @@ import { AccountDisable } from "./account-disable";
 import { AccountValidate } from "./account-validate";
 import { ResetPassword } from "./reset-password";
 import SystemMenuManagement from "./system-menu-management";
+import FoldersManagement from "./folders-management";
 
 export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
     
@@ -51,7 +52,7 @@ export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
         <AdminInstructions user={user} />
         );
         case 'secretarias': return <SecretaryManagement />;
-        case 'pastas': return <div>Gestão de Pastas de Rede (Em construção)</div>;
+        case 'pastas': return <FoldersManagement />;
         case 'modulos': return (<SystemMenuManagement />);
         case 'usuarios': return (
         <div>
