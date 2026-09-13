@@ -5,17 +5,18 @@ import { getToken, isTokenExpired, refreshTokenRequest } from '../authentication
 export const getFolders = async () => {
 	const token = getToken();
     if (!token) {
-        //Try to refresh the token if it is expired
-        if (isTokenExpired(token)) {
-            try {
-                const data = await refreshTokenRequest();
-                token = data.accessToken;
-            } catch (err) {
-                throw new Error('Usuário não autenticado');
-            }
-        } else {
+        throw new Error('Usuário não autenticado');
+    }
+    //Try to refresh the token if it is expired
+    if (isTokenExpired(token)) {
+        try {
+            const data = await refreshTokenRequest();
+            token = data.accessToken;
+        } catch (err) {
             throw new Error('Usuário não autenticado');
         }
+    } else {
+        throw new Error('Usuário não autenticado');
     }
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8443';
     const requestOptions = {
@@ -40,18 +41,17 @@ export const getFolders = async () => {
 export const createFolder = async (folderData) => {
 	const token = getToken();
     if (!token) {
-        //Try to refresh the token if it is expired
-        if (isTokenExpired(token)) {
-            try {
-                const data = await refreshTokenRequest();
-                token = data.accessToken;
-            } catch (err) {
-                throw new Error('Usuário não autenticado');
-            }
-        } else {
+        throw new Error('Usuário não autenticado');
+    }
+    //Try to refresh the token if it is expired
+    if (isTokenExpired(token)) {
+        try {
+            const data = await refreshTokenRequest();
+            token = data.accessToken;
+        } catch (err) {
             throw new Error('Usuário não autenticado');
         }
-    }
+    };
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8443';
     const requestOptions = {
         method: 'POST',
@@ -76,18 +76,17 @@ export const createFolder = async (folderData) => {
 export const updateFolder = async (folderId, folderData) => {
 	const token = getToken();
     if (!token) {
-        //Try to refresh the token if it is expired
-        if (isTokenExpired(token)) {
-            try {
-                const data = await refreshTokenRequest();
-                token = data.accessToken;
-            } catch (err) {
-                throw new Error('Usuário não autenticado');
-            }
-        } else {
+        throw new Error('Usuário não autenticado');
+    }
+    //Try to refresh the token if it is expired
+    if (isTokenExpired(token)) {
+        try {
+            const data = await refreshTokenRequest();
+            token = data.accessToken;
+        } catch (err) {
             throw new Error('Usuário não autenticado');
         }
-    }
+    };
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8443';
     const requestOptions = {
         method: 'PUT',
@@ -114,18 +113,17 @@ export const updateFolder = async (folderId, folderData) => {
 export const deleteFolder = async (folderId) => {
 	const token = getToken();
     if (!token) {
-        //Try to refresh the token if it is expired
-        if (isTokenExpired(token)) {
-            try {
-                const data = await refreshTokenRequest();
-                token = data.accessToken;
-            } catch (err) {
-                throw new Error('Usuário não autenticado');
-            }
-        } else {
+        throw new Error('Usuário não autenticado');
+    }
+    //Try to refresh the token if it is expired
+    if (isTokenExpired(token)) {
+        try {
+            const data = await refreshTokenRequest();
+            token = data.accessToken;
+        } catch (err) {
             throw new Error('Usuário não autenticado');
         }
-    }
+    };
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8443';
     const requestOptions = {
         method: 'DELETE',
