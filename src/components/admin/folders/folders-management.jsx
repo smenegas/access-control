@@ -7,7 +7,7 @@ const emptyFolder = {
 	id: null,
 	folder_name: "",
 	folder_path: "",
-	observations: "",
+	observation: "",
 };
 
 export default function FoldersManagement() {
@@ -41,9 +41,9 @@ export default function FoldersManagement() {
 	const startEdit = folder => {
 		setFormData({
 			id: folder.id,
-			name: folder.name || "",
-			path: folder.path || "",
-			observations: folder.observations || "",
+			folder_name: folder.folder_name || "",
+			folder_path: folder.folder_path || "",
+			observation: folder.observation || "",
 		});
 		setMode("edit");
 		setMessage({ type: "", text: "" });
@@ -56,7 +56,7 @@ export default function FoldersManagement() {
 
 	const handleSave = async () => {
 		const folderToSave = mode === "edit" ? formData : newFolder;
-		if (!folderToSave.name.trim() || !folderToSave.path.trim()) {
+		if (!folderToSave.folder_name.trim() || !folderToSave.folder_path.trim()) {
 			setMessage({ type: "erro", text: "Informe o nome e o caminho da pasta." });
 			return;
 		}
@@ -128,16 +128,16 @@ export default function FoldersManagement() {
 					<input
 						type="text"
 						placeholder="Nome da pasta"
-						value={newFolder.name}
-						onChange={event => setNewFolder({ ...newFolder, name: event.target.value })}
+						value={newFolder.folder_name}
+						onChange={event => setNewFolder({ ...newFolder, folder_name: event.target.value })}
 						className="folder-form-input"
 						required
 					/>
 					<input
 						type="text"
 						placeholder="Caminho da rede"
-						value={newFolder.path}
-						onChange={event => setNewFolder({ ...newFolder, path: event.target.value })}
+						value={newFolder.folder_path}
+						onChange={event => setNewFolder({ ...newFolder, folder_path: event.target.value })}
 						className="folder-form-input"
 						required
 					/>
@@ -145,8 +145,8 @@ export default function FoldersManagement() {
 
 				<textarea
 					placeholder="Observações"
-					value={newFolder.observations}
-					onChange={event => setNewFolder({ ...newFolder, observations: event.target.value })}
+					value={newFolder.observation}
+					onChange={event => setNewFolder({ ...newFolder, observation: event.target.value })}
 					className="folder-form-textarea"
 					rows={3}
 				/>
