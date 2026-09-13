@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../common/messages.css";
-import "./account-management.css";
+import "./folders-management.css";
 
 const emptyFolder = {
 	id: null,
@@ -103,11 +103,11 @@ export default function FoldersManagement({
 	};
 
 	return (
-		<div className="secretary-management-container">
+		<div className="folder-management-container">
 			<h2>Gestão de Pastas de Rede</h2>
 
 			{message.text && (
-				<div className={message.type === "sucesso" ? "success-message" : "error-message"} style={{ marginBottom: 16 }}>
+				<div className={message.type === "sucesso" ? "folder-message-success" : "folder-message-error"}>
 					{message.text}
 				</div>
 			)}
@@ -117,82 +117,113 @@ export default function FoldersManagement({
 					event.preventDefault();
 					handleSave();
 				}}
-				className="form-adicionar"
+				className="folder-management-form"
 			>
-				<input
-					type="text"
-					placeholder="Nome da pasta"
-					value={newFolder.name}
-					onChange={event => setNewFolder({ ...newFolder, name: event.target.value })}
-					className="login-input"
-					required
-				/>
-				<input
-					type="text"
-					placeholder="Caminho da rede"
-					value={newFolder.path}
-					onChange={event => setNewFolder({ ...newFolder, path: event.target.value })}
-					className="login-input"
-					required
-				/>
-				<input
-					type="text"
+				<div className="folder-form-row">
+					<input
+						type="text"
+						placeholder="Nome da pasta"
+						value={newFolder.name}
+						onChange={event => setNewFolder({ ...newFolder, name: event.target.value })}
+						className="folder-form-input"
+						required
+					/>
+					<input
+						type="text"
+						placeholder="Caminho da rede"
+						value={newFolder.path}
+						onChange={event => setNewFolder({ ...newFolder, path: event.target.value })}
+						className="folder-form-input"
+						required
+					/>
+				</div>
+
+				<textarea
 					placeholder="Observações"
 					value={newFolder.observations}
 					onChange={event => setNewFolder({ ...newFolder, observations: event.target.value })}
-					className="login-input"
+					className="folder-form-textarea"
+					rows={3}
 				/>
-				<button type="submit" className="btn-primario" disabled={saving}>
-					{mode === "edit" ? "Salvar" : "Adicionar"}
-				</button>
-				{mode === "edit" && (
-					<button type="button" className="btn-secundario" onClick={cancelOperation}>
-						Cancelar
+
+				<div className="folder-form-actions">
+					<button type="submit" className="folder-btn-primary" disabled={saving}>
+						{mode === "edit" ? "Salvar" : "Adicionar"}
 					</button>
-				)}
+					{mode === "edit" && (
+						<button type="button" className="folder-btn-secondary" onClick={cancelOperation}>
+							Cancelar
+						</button>
+					)}
+				</div>
 			</form>
 
 			{loading ? (
-				<div className="warning-message">Carregando pastas de rede...</div>
+				<div className="folder-warning-message">Carregando pastas de rede...</div>
 			) : (
-				<table className="tabela-solicitacoes">
+				<table className="folder-table">
 					<thead>
 						<tr>
 							<th>Nome</th>
 							<th>Caminho</th>
 							<th>Observações</th>
-							<th style={{ width: "150px" }}>Ações</th>
+							<th className="folder-table-actions-header">Ações</th>
 						</tr>
 					</thead>
 					<tbody>
 						{folders.map(folder => (
 							<tr key={folder.id}>
-								<td>{mode === "edit" && formData.id === folder.id ? (
-									<input type="text" value={formData.name} onChange={event => setFormData({ ...formData, name: event.target.value })} className="login-input" style={{ padding: "5px" }} />
-								) : <strong>{folder.name}</strong>}</td>
-								<td>{mode === "edit" && formData.id === folder.id ? (
-									<input type="text" value={formData.path} onChange={event => setFormData({ ...formData, path: event.target.value })} className="login-input" style={{ padding: "5px" }} />
-								) : folder.path}</td>
-								<td>{mode === "edit" && formData.id === folder.id ? (
-									<input type="text" value={formData.observations} onChange={event => setFormData({ ...formData, observations: event.target.value })} className="login-input" style={{ padding: "5px" }} />
-								) : (folder.observations || "-")}</td>
 								<td>
 									{mode === "edit" && formData.id === folder.id ? (
-										<div style={{ display: "flex", gap: "10px" }}>
-											<button type="button" className="btn-secundario" onClick={handleSave}>Salvar</button>
-											<button type="button" className="btn-secundario" onClick={cancelOperation}>Cancelar</button>
+										<input
+											type="text"
+											value={formData.name}
+											onChange={event => setFormData({ ...formData, name: event.target.value })}
+											className="folder-table-input"
+										/>
+									) : <strong>{folder.name}</strong>}
+								</td>
+								<td>
+									{mode === "edit" && formData.id === folder.id ? (
+										<input
+											type="text"
+											value={formData.path}
+											onChange={event => setFormData({ ...formData, path: event.target.value })}
+											className="folder-table-input"
+										/>
+									) : folder.path}
+								</td>
+								<td>
+									{mode === "edit" && formData.id === folder.id ? (
+										<textarea
+											value={formData.observations}
+											onChange={event => setFormData({ ...formData, observations: event.target.value })}
+											className="folder-table-textarea"
+											rows={3}
+										/>
+									) : (folder.observations || "-")}
+								</td>
+								<td>
+									{mode === "edit" && formData.id === folder.id ? (
+										<div className="folder-table-actions">
+											<button type="button" className="folder-btn-secondary" onClick={handleSave}>Salvar</button>
+											<button type="button" className="folder-btn-secondary" onClick={cancelOperation}>Cancelar</button>
 										</div>
 									) : (
-										<div style={{ display: "flex", gap: "10px" }}>
-											<button type="button" className="btn-secundario" onClick={() => startEdit(folder)}>Editar</button>
-											<button type="button" className="btn-secundario" onClick={() => handleDelete(folder)}>Excluir</button>
+										<div className="folder-table-actions">
+											<button type="button" className="folder-btn-secondary" onClick={() => startEdit(folder)}>Editar</button>
+											<button type="button" className="folder-btn-secondary" onClick={() => handleDelete(folder)}>Excluir</button>
 										</div>
 									)}
 								</td>
 							</tr>
 						))}
 						{folders.length === 0 && (
-							<tr><td colSpan="4" className="empty-row">Nenhuma pasta de rede cadastrada.</td></tr>
+							<tr>
+								<td colSpan="4" className="folder-empty-row">
+									Nenhuma pasta de rede cadastrada.
+								</td>
+							</tr>
 						)}
 					</tbody>
 				</table>
