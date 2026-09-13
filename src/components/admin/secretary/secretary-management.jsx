@@ -4,9 +4,9 @@ import {
   updateSecretary, 
   deleteSecretary,
   createSecretary
-} from '../../helpers/secretaries/secretaries';
+} from '../../../helpers/secretaries/secretaries';
 
-import '../common/messages.css';
+import '../../common/messages.css';
 
 
 // Ícones SVG inline para editar e excluir

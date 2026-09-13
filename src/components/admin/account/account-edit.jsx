@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { fetchAllUsers } from '../../helpers/users/users'; // Função para buscar usuários
+import { fetchAllUsers } from '../../../helpers/users/users'; // Função para buscar usuários
 import { useNavigate } from 'react-router-dom';
 
 import AccountEditUserSelected from './account-edit-user-selected';

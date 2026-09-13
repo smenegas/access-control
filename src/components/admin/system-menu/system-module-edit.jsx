@@ -1,5 +1,5 @@
-import "../common/messages.css";
-import "./system-menu-management.css";
+import "../../common/messages.css";
+import "../system-menu/system-menu-management.css";
 
 export default function SystemModuleEdit({ 
     formData, 

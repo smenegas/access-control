@@ -9,7 +9,7 @@ import ProfileError from './components/login/profile-error';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import EditAccount from './components/edit-account/edit-account';
 import ValidationAccounts from './components/validation-accounts/validation-accounts';
-import AccountEditUserSelected from './components/admin/account-edit-user-selected';
+import AccountEditUserSelected from './components/admin/account/account-edit-user-selected';
 import './App.css'
 
 function App() {

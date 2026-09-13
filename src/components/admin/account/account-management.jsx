@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { adminRegisterUser } from '../../helpers/users/users';
-import { LoadingOverlay } from '../common/loader/loader';
+import { adminRegisterUser } from '../../../helpers/users/users';
+import { LoadingOverlay } from '../../common/loader/loader';
 import './account-management.css';
 import './account-edit.css';
-import { getSecretaries } from '../../helpers/secretaries/secretaries';
+import { getSecretaries } from '../../../helpers/secretaries/secretaries';
 
 export default function AccountMangement({ aoVoltarLogin }) {
   

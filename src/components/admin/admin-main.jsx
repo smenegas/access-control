@@ -8,16 +8,16 @@ import {
   isTokenExpired, 
   refreshTokenRequest 
 } from '../../helpers/authentication';
-import SecretaryManagement from './secretary-management';
+import SecretaryManagement from './secretary/secretary-management';
 import AdminInstructions from './AdminInstructions';
-import AccountEdit from "./account-edit";
-import AccountMangement from './account-management';
-import { AccountActivate } from "./account-activate";
-import { AccountDisable } from "./account-disable";
-import { AccountValidate } from "./account-validate";
-import { ResetPassword } from "./reset-password";
-import SystemMenuManagement from "./system-menu-management";
-import FoldersManagement from "./folders-management";
+import AccountEdit from "./account/account-edit";
+import AccountMangement from './account/account-management';
+import { AccountActivate } from "./account/account-activate";
+import { AccountDisable } from "./account/account-disable";
+import { AccountValidate } from "./account/account-validate";
+import { ResetPassword } from "./account/reset-password";
+import SystemMenuManagement from "./system-menu/system-menu-management";
+import FoldersManagement from "./folders/folders-management";
 
 export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
     

@@ -3,13 +3,15 @@ import SystemModuleAdd from './system-module-add';
 import SystemModuleEdit from './system-module-edit';
 import SystemMenuAdd from './system-menu-add';
 import SystemMenuEdit from './system-menu-edit';
-import { AddMenuItem, LoadMenuTree, UpdateMenuItem, DeleteMenuItem }  from '../../helpers/system-menu/system-menu';
+import { AddMenuItem, LoadMenuTree, UpdateMenuItem, DeleteMenuItem }  from '../../../helpers/system-menu/system-menu';
 
 import './system-menu-management.css';
-import '../common/messages.css';
+import '../../common/messages.css';
 
 //TODO: Mudar o código para que os nomes de variávies e funções estejam em inglês.
 // Recusive component to build the menu tree structure
+
+//TODO: Corrigir a edição de módulos.
 const BuildMenuTree = ({ 
   menu, 
   activeNode, 

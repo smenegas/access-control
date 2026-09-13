@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from "react";
-import "../common/messages.css";
+import "../../common/messages.css";
 import "./folders-management.css";
 
 const emptyFolder = {
 	id: null,
-	name: "",
-	path: "",
+	folder_name: "",
+	folder_path: "",
 	observations: "",
 };
 
-export default function FoldersManagement({
-	getFolders = async () => [],
-	createFolder = async folder => ({ ...folder, id: Date.now() }),
-	updateFolder = async (_id, folder) => folder,
-	deleteFolder = async () => undefined,
-}) {
+export default function FoldersManagement() {
 	const [folders, setFolders] = useState([]);
 	const [newFolder, setNewFolder] = useState(emptyFolder);
 	const [formData, setFormData] = useState(emptyFolder);

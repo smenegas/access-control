@@ -1,10 +1,10 @@
-import { useState, useEffect, useMemo } from 'react';
-import { fetchAllUsers, approveUserAccount } from '../../helpers/users/users';
+import { useState, useMemo, useEffect } from 'react';
+import { fetchAllUsers, disableUserAccount } from '../../../helpers/users/users';
 
 import './account-edit.css';
-import '../common/messages.css';
+import '../../common/messages.css';
 
-export const AccountValidate = (user = null) => {
+export const AccountDisable = (user = null) => {
 
     const [users, setUsers] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
@@ -50,45 +50,36 @@ export const AccountValidate = (user = null) => {
         let resp = await fetchAllUsers();
         if (resp) {
             let loadedUsers = await resp.json();
-            let filteredLoadedUsers = loadedUsers.filter(u => u.account_status === 0); // Filtra apenas usuários ativos
-            
-            if (filteredLoadedUsers === null || filteredLoadedUsers.length === 0) {
-                setMsg({ type: 'info', text: 'Não há contas de usuário para validar no momento.' });
-                setUsers([]);
-                return;
-            }
-
+            let filteredLoadedUsers = loadedUsers.filter(u => u.account_status === 1); // Filtra apenas usuários ativos
             let sortedUsers = filteredLoadedUsers.sort((a, b) => a.name.localeCompare(b.name)); // Ordena por nome
             setUsers(sortedUsers);
         } else {
             setMsg('Erro ao carregar usuários.');
         }   
-    };
-
+    }
+           
     const handleBuscar = (e) => {
         setSearch(e.target.value);
         setCurrentPage(1); // Reseta para a primeira página ao buscar
     };
 
-    const validateAccount = async (userId, userName, secretary) => {
-        
-        if(!window.confirm(`Tem certeza que deseja validar a conta do usuário ${userName}?`)) {
+    const disableAccount = async (userId, userName) => {
+        if (!window.confirm(`Tem certeza que deseja inativar a conta do usuário ${userName}?`)) {
             return;
         }
-        try {
-            const response = await approveUserAccount(userId, secretary);
-            if (response.ok) {
-                setMsg({ type: 'success', text: `Conta do usuário ${userName} validada com sucesso.` });
-                // Atualiza a lista de usuários após a validação
-                await loadUsers();
-            } else {
-                const errorData = await response.json();
-                setMsg({ type: 'error', text: `Erro ao validar conta do usuário ${userName}: ${errorData.message || 'Erro desconhecido'}` });
-            }
-        } catch (error) {
-            setMsg({ type: 'error', text: `Erro ao validar conta do usuário ${userName}: ${error.message}` });
-        }
 
+        try {
+            const response = await disableUserAccount(userId);
+
+            if (!response.ok) {
+                throw new Error('Erro ao inativar conta.');
+            }
+
+            setMsg({ type: 'success', text: `Conta do usuário ${userName} inativada com sucesso.` });
+            await loadUsers(); // Recarrega a lista de usuários após a ação
+        } catch (error) {
+            setMsg({ type: 'error', text: `Erro ao inativar conta do usuário ${userName}: ${error.message}` });
+        }
     };
 
     return (
@@ -96,7 +87,7 @@ export const AccountValidate = (user = null) => {
         <div className="account-edit-root">
             <div>
                 <div className="cabecalho-lista">
-                <h2>Validar Contas de Usuários</h2>
+                <h2>Inativar Contas de Usuários</h2>
                 </div>
             </div>
         </div>
@@ -143,9 +134,9 @@ export const AccountValidate = (user = null) => {
                   <td>
                     <button 
                       className="btn-secundario" 
-                      onClick={() => validateAccount(user.id, user.name, user.secretary_id)}
+                      onClick={() => disableAccount(user.id, user.name)}
                     >
-                      🧾 Validar Conta
+                      🚫 Inativar Conta
                     </button>
                   </td>
                 </tr>
@@ -185,4 +176,5 @@ export const AccountValidate = (user = null) => {
         )}
         </>
     );
+
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-import { getSecretaries } from "../../helpers/secretaries/secretaries";
-import { updateUserAccountByAdmin } from "../../helpers/users/users";
+import { getSecretaries } from "../../../helpers/secretaries/secretaries";
+import { updateUserAccountByAdmin } from "../../../helpers/users/users";
 
 import "./account-edit.css";
 

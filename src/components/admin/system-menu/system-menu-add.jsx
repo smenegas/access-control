@@ -1,19 +1,19 @@
-import '../common/messages.css';
-import './system-menu-management.css';
-import './system-menu-add.css';
+import "../../common/messages.css";
+import "./system-menu-management.css";
+import "./system-module-add.css";
 
-export default function SystemMenuEdit({
+export default function SystemMenuAdd({ 
     formData, 
     setFormData, 
     cancelOperation,
-    updateMenuItemInTree,
+    addMenuItemToTree,
  }) {
 
     return (
     <div id="cartao-formulario-menu" className="card menu-form-card">
         <div className="menu-form-header">
             <h3 className="menu-form-title">
-                Editar Item
+                Novo Item de Menu
             </h3>
         </div>
 
@@ -21,7 +21,7 @@ export default function SystemMenuEdit({
             className="login-form"
             onSubmit={e => {
                 e.preventDefault();
-                updateMenuItemInTree();
+                addMenuItemToTree();
             }}
         >
         <div className="menu-add-form-grid">
@@ -41,7 +41,7 @@ export default function SystemMenuEdit({
         </div>
 
         {/* Ordem de Exibição */}
-        {/*<div className="input-group">
+        <div className="input-group">
             <label htmlFor="menu-ordem">Ordem na Lista</label>
             <input 
             id="menu-ordem" 
@@ -52,7 +52,7 @@ export default function SystemMenuEdit({
             value={formData.menu_order}
             onChange={e => setFormData({...formData, menu_order: e.target.value})}
             />
-        </div>*/}
+        </div>
 
         </div>
 
@@ -75,4 +75,4 @@ export default function SystemMenuEdit({
         </form>
     </div>
     );
-}
+};

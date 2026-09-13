@@ -1,8 +1,8 @@
-import "../common/messages.css";
-import "./system-menu-management.css";
+import "../../common/messages.css";
+import "../system-menu/system-menu-management.css";
 import "./system-module-add.css";
 
-export default function SystemMenuAdd({ 
+export default function SystemModuleAdd({ 
     formData, 
     setFormData, 
     cancelOperation,
@@ -13,7 +13,7 @@ export default function SystemMenuAdd({
     <div id="cartao-formulario-menu" className="card menu-form-card">
         <div className="menu-form-header">
             <h3 className="menu-form-title">
-                Novo Item de Menu
+                Novo Módulo Principal
             </h3>
         </div>
 
@@ -26,15 +26,15 @@ export default function SystemMenuAdd({
         >
         <div className="menu-add-form-grid">
         
-        {/* Nome do Menu */}
+        {/* Nome do Módulo / Menu */}
         <div className="input-group">
-            <label htmlFor="menu-name">Nome do Menu</label>
+            <label htmlFor="menu-name">Nome do Módulo</label>
             <input 
             id="menu-name" 
             type="text" 
             required 
             className="login-input"
-            placeholder="Informe o nome do menu"
+            placeholder="Informe o nome do módlulo"
             value={formData.name}
             onChange={e => setFormData({...formData, name: e.target.value})}
             />

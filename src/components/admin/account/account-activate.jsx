@@ -1,15 +1,12 @@
-import { useState, useEffect, useMemo } from 'react';
-import { fetchAllUsers, changeUserPasswordAdmin } from '../../helpers/users/users';
+import { useState, useMemo, useEffect } from 'react';
+import { fetchDisabledAccounts, activateUserAccount } from '../../../helpers/users/users';
 
 import './account-edit.css';
-import './reset-password.css';
-import '../common/messages.css';
+import '../../common/messages.css';
 
-export const ResetPassword = (user = null) => {
+export const AccountActivate = ({user = null}) => {
 
     const [users, setUsers] = useState([]);
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [password, setPassword] = useState('');
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState('');
@@ -35,63 +32,60 @@ export const ResetPassword = (user = null) => {
         }
         loadData();
     }, []);
-
+    
     // Atualiza o número total de páginas sempre que o conjunto filtrado mudar
     useEffect(() => {
-        const pages = filteredUsers.length > 0 ? Math.ceil(filteredUsers.length / perPage) : 1;
-        setTotalPages(pages);
-        if (currentPage > pages) setCurrentPage(1);
+    const pages = filteredUsers.length > 0 ? Math.ceil(filteredUsers.length / perPage) : 1;
+    setTotalPages(pages);
+    if (currentPage > pages) setCurrentPage(1);
     }, [filteredUsers, perPage]);
 
     // Usuários a serem exibidos na página atual
     const paginatedUsers = useMemo(() => {
-        const start = (currentPage - 1) * perPage;
-        return filteredUsers.slice(start, start + perPage);
+    const start = (currentPage - 1) * perPage;
+    return filteredUsers.slice(start, start + perPage);
     }, [filteredUsers, currentPage, perPage]);
 
-    const loadUsers = async () => {
-        let resp = await fetchAllUsers();
-        if (resp) {
-            let loadedUsers = await resp.json();
-            let filteredLoadedUsers = loadedUsers.filter(u => u.account_status === 1); // Filtra apenas usuários ativos
-            
-            if (filteredLoadedUsers === null || filteredLoadedUsers.length === 0) {
-                setMsg({ type: 'info', text: 'Não há contas de usuário para redefinir senha no momento.' });
-                setUsers([]);
-                return;
-            }
-            setUsers(filteredLoadedUsers);
-        }
-    };
-
     const handleBuscar = (e) => {
-        setSearch(e.target.value);
-        setCurrentPage(1); // Reseta para a primeira página ao buscar
-    };
+      setSearch(e.target.value);
+      setCurrentPage(1); // Reseta para a primeira página ao buscar
+    }
 
-    const handleSelectUser = async (user) => {
-        setSelectedUser(user);
-    };
-
-    const handleResetPassword = async () => {
+    // Function for loading the list of users that are the disabled accounts.
+    const loadUsers = async () => {
+        let data = null;
+        let loadedUsers = null;
         try {
-          let response = await changeUserPasswordAdmin(selectedUser.id, password);
-          console.log('Response from changeUserPasswordAdmin:', response);
-          if (response.ok) {
-              setMsg({ type: 'success', text: `Senha redefinida com sucesso para ${selectedUser.name}.` });
-              setSelectedUser(null);
-              setPassword('');
-          } else {
-              const errorData = await response.json();
-              setMsg({ type: 'error', text: `Erro ao redefinir senha: ${errorData.message || 'Erro desconhecido'}` });
-          };
-        } catch (error) {
-          setMsg({ type: 'error', text: `Erro ao redefinir senha: ${error.message}` });
-        };
-    };
-
-    const handleChangePassword = (e) => {
-        setPassword(e.target.value);
+            data = await fetchDisabledAccounts();
+            loadedUsers = await data.json();
+            if (loadedUsers.length === 0) {
+                setMsg({ text: 'Não há contas de usuários desativadas para ativação.', type: 'info' });
+            }
+            loadedUsers.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'pt-BR', { sensitivity: 'base' }));
+            setUsers(loadedUsers);
+        }
+        catch (e) {
+            setMsg({ text: 'Houve um erro ao carregar a lista de usuários.', type: 'error' })
+            throw new Error(e.message);
+        }
+    }
+    
+    // Function to handle the activation of a user account.
+    const activateAccount = async (userId, userName) => {
+        try {
+            let res = await activateUserAccount(userId);
+            if (!res.ok) {
+                const errorData = await res.json();
+                setMsg({ text: 'Erro ao ativar a conta.', type: 'error' });
+                throw new Error(errorData.message || 'Erro ao ativar a conta.');
+            }
+            setMsg({ text: `A Conta do usuário ${userName} foi ativada com sucesso!`, type: 'success' });
+            // Reload the users list after activation
+            await loadUsers();
+        } catch (e) {
+            setMsg({ text: 'Houve um erro ao ativar a conta.', type: 'error' });
+            throw new Error(e.message);
+        }
     };
 
     return (
@@ -99,14 +93,14 @@ export const ResetPassword = (user = null) => {
         <div className="account-edit-root">
             <div>
                 <div className="cabecalho-lista">
-                <h2>Redefinir Senhas</h2>
+                <h2>Ativar Contas de Usuários</h2>
                 </div>
             </div>
         </div>
         <hr className='linha-separadora'/>
 
         {msg && (
-          <div className={
+          <div className={ 
               msg.type === 'error' ? 'error-message' :  
               msg.type === 'info' ? 'warning-message' :
               msg.type === 'success' ? 'success-message' : 
@@ -115,37 +109,8 @@ export const ResetPassword = (user = null) => {
             {msg.text}
           </div>
         )}
-
+        
         {/* Campo de Busca */}
-        {selectedUser && (
-            <>
-            <div className="card-password">
-                <div className="selected-user-info">
-                    <p>Digite a nova senha para {selectedUser.name}</p>
-                    <input 
-                      type="password" 
-                      placeholder="Nova Senha" 
-                      className="password-input"
-                      value={password}
-                      onChange={handleChangePassword}
-                      required
-                    />
-                    
-                </div>
-                <div className="selected-user-info">
-                    <button 
-                      type="button"
-                      className="password-button"
-                      onClick={handleResetPassword}
-                    >
-                        Redefinir Senha
-                    </button>
-                </div>
-            </div>
-            </>
-        )}
-              {!selectedUser && (
-              <>
         <div className='cabecalho-lista'>
             <input 
                 type="text" 
@@ -175,9 +140,9 @@ export const ResetPassword = (user = null) => {
                   <td>
                     <button 
                       className="btn-secundario" 
-                      onClick={() => handleSelectUser(user)}
+                      onClick={() => activateAccount(user.id, user.name)}
                     >
-                      🔑 Redefinir Senha
+                      ✅ Ativar Conta
                     </button>
                   </td>
                 </tr>
@@ -215,7 +180,6 @@ export const ResetPassword = (user = null) => {
             </button>
           </div>
         )}
-        </>)}
         </>
     );
-};
+}
