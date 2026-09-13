@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getFolders, createFolder, updateFolder, deleteFolder } from "../../../helpers/folders/folders";
+import { getFolders, createFolder, updateFolder, deleteFolder } from "../../../helpers/folders/network-folders";
 import "../../common/messages.css";
 import "./folders-management.css";
 
@@ -64,11 +64,20 @@ export default function FoldersManagement() {
 		setSaving(true);
 		try {
 			if (mode === "edit") {
-				await updateFolder(formData.id, formData);
-				setMessage({ type: "sucesso", text: "Pasta atualizada com sucesso." });
+				const foldersChanged = await updateFolder(formData.id, formData);
+				if (foldersChanged > 0) {
+					setMessage({ type: "sucesso", text: "Pasta atualizada com sucesso." });
+				} else {
+					setMessage({ type: "erro", text: "Nenhuma alteração foi feita na pasta." });
+				}
 			} else {
-				await createFolder(newFolder);
-				setMessage({ type: "sucesso", text: "Pasta cadastrada com sucesso." });
+				const foldersCreated = await createFolder(newFolder);
+				if (foldersCreated > 0) {
+					setMessage({ type: "sucesso", text: "Pasta cadastrada com sucesso." });
+				}
+				else {
+					setMessage({ type: "erro", text: "Nenhuma pasta foi cadastrada." });
+				}	
 			}
 			setNewFolder(emptyFolder);
 			cancelOperation();

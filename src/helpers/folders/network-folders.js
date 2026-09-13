@@ -1,6 +1,9 @@
 // Helper functions to interact with the network folders API
 import { getToken, isTokenExpired, refreshTokenRequest } from '../authentication';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8443';
+const FOLDERS_ENDPOINT = `${API_URL}/network-folders`;
+
 // Get the list of network folders
 export const getFolders = async () => {
 	const token = getToken();
@@ -15,10 +18,7 @@ export const getFolders = async () => {
         } catch (err) {
             throw new Error('Usuário não autenticado');
         }
-    } else {
-        throw new Error('Usuário não autenticado');
     }
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8443';
     const requestOptions = {
         method: 'GET',
         headers: {
@@ -27,7 +27,7 @@ export const getFolders = async () => {
         },
     };
     try {
-        const response = await fetch(`${API_URL}/folders`, requestOptions);
+        const response = await fetch(`${FOLDERS_ENDPOINT}`, requestOptions);
         const data = await response.json();
         if (!response.ok) {
             throw new Error(data?.message || 'Erro ao carregar pastas de rede.');
@@ -52,7 +52,6 @@ export const createFolder = async (folderData) => {
             throw new Error('Usuário não autenticado');
         }
     };
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8443';
     const requestOptions = {
         method: 'POST',
         headers: {
@@ -62,7 +61,7 @@ export const createFolder = async (folderData) => {
         body: JSON.stringify(folderData),
     };
     try {
-        const response = await fetch(`${API_URL}/folders`, requestOptions);
+        const response = await fetch(`${FOLDERS_ENDPOINT}`, requestOptions);
         const data = await response.json();
         if (!response.ok) {
             throw new Error(data?.message || 'Erro ao criar pasta de rede.');
@@ -87,7 +86,6 @@ export const updateFolder = async (folderId, folderData) => {
             throw new Error('Usuário não autenticado');
         }
     };
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8443';
     const requestOptions = {
         method: 'PUT',
         headers: {
@@ -98,7 +96,7 @@ export const updateFolder = async (folderId, folderData) => {
     };
     
     try {
-        const response = await fetch(`${API_URL}/folders/${folderId}`, requestOptions);
+        const response = await fetch(`${FOLDERS_ENDPOINT}/${folderId}`, requestOptions);
         const data = await response.json();
         if (!response.ok) {
             throw new Error(data?.message || 'Erro ao atualizar pasta de rede.');
@@ -124,7 +122,6 @@ export const deleteFolder = async (folderId) => {
             throw new Error('Usuário não autenticado');
         }
     };
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8443';
     const requestOptions = {
         method: 'DELETE',
         headers: {
@@ -133,7 +130,7 @@ export const deleteFolder = async (folderId) => {
         },
     };
     try {
-        const response = await fetch(`${API_URL}/folders/${folderId}`, requestOptions);
+        const response = await fetch(`${FOLDERS_ENDPOINT}/${folderId}`, requestOptions);
         const data = await response.json();
         if (!response.ok) {
             throw new Error(data?.message || 'Erro ao excluir pasta de rede.');
