@@ -3,24 +3,6 @@ import { getFolders, createFolder, updateFolder, deleteFolder } from "../../../h
 import "../../common/messages.css";
 import "./folders-management.css";
 
-function EditIcon({ title = "Editar" }) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-label={title} role="img">
-      <title>{title}</title>
-      <path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-9.2 9.2-2.1.4.4-2.1 9.2-9.2zM3 17h14v2H3v-2z" fill="#2563eb"/>
-    </svg>
-  );
-}
-
-function DeleteIcon({ title = "Excluir" }) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-label={title} role="img">
-      <title>{title}</title>
-      <path d="M6 7v8a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V7m-9 0h10m-7-3h4a1 1 0 0 1 1 1v1H6V5a1 1 0 0 1 1-1z" stroke="#dc2626" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
-}
-
 const emptyFolder = {
 	id: null,
 	folder_name: "",
@@ -41,7 +23,6 @@ export default function FoldersManagement() {
 		setLoading(true);
 		try {
 			const data = await getFolders();
-			console.log("Folders loaded:", data);
 			setFolders(Array.isArray(data) ? data : []);
 		} catch (error) {
 			setMessage({
@@ -112,7 +93,7 @@ export default function FoldersManagement() {
 	};
 
 	const handleDelete = async folder => {
-		if (!window.confirm(`Tem certeza que deseja excluir a pasta "${folder.name}"?`)) return;
+		if (!window.confirm(`Tem certeza que deseja excluir a pasta "${folder.folder_name}"?`)) return;
 
 		try {
 			await deleteFolder(folder.id);
@@ -124,6 +105,29 @@ export default function FoldersManagement() {
 				text: error.message || "Erro ao excluir a pasta de rede.",
 			});
 		}
+	};
+
+	function EditIcon({ title = "Editar" }) {
+		return (
+			<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-label={title} role="img">
+			<title>{title}</title>
+			<path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-9.2 9.2-2.1.4.4-2.1 9.2-9.2zM3 17h14v2H3v-2z" fill="#2563eb"/>
+			</svg>
+		);
+	};
+
+	function DeleteIcon({ title = "Excluir" }) {
+		return (
+			<svg 
+				width="20" height="20" 
+				viewBox="0 0 20 20" 
+				fill="none" aria-label={title} 
+				role="img"
+			>
+			<title>{title}</title>
+			<path d="M6 7v8a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V7m-9 0h10m-7-3h4a1 1 0 0 1 1 1v1H6V5a1 1 0 0 1 1-1z" stroke="#dc2626" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+			</svg>
+		);
 	};
 
 	return (
