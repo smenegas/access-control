@@ -104,7 +104,7 @@ export const updateFolder = async (folderId, folderData) => {
         if (!response.ok) {
             throw new Error(data?.message || 'Erro ao atualizar pasta de rede.');
         }
-        return data;
+        return data.Rows
     } catch (error) {
         throw error;
     }
