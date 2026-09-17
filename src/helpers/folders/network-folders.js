@@ -32,7 +32,7 @@ export const getFolders = async () => {
         if (!response.ok) {
             throw new Error(data?.message || 'Erro ao carregar pastas de rede.');
         }
-        return response;
+        return data;
     } catch (error) {
         throw error;
     }
