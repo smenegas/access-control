@@ -29,8 +29,14 @@ export default function SecretaryDashboard() {
       {/* Cabeçalho do Gestor */}
       <Header message="Bem-vindo(a), Secretário(a)! Gerencie as solicitações de acesso pendentes." />
 
+      {/* TODO: Adicionar filtros iguais aos do dashboard do Requerente, para que o Secretário possa filtrar as solicitações por protocolo, secretaria, status e período. */}
+
       {/* Cartões de Resumo (Indicadores) */}
       <div className="cards-container">
+        <div className="card">
+          <h3>Total Solicitado</h3>
+          <p className="card-valor">15</p>
+        </div>
         <div className="card" style={{ borderColor: '#f39c12' }}>
           <h3>Acessos Pendentes</h3>
           <p className="card-valor pendente">{solicitacoesPendentes.length}</p>
@@ -38,6 +44,10 @@ export default function SecretaryDashboard() {
         <div className="card">
           <h3>Aprovados no Mês</h3>
           <p className="card-valor aprovada">28</p>
+        </div>
+        <div className="card">
+          <h3>Rejeitados no Mês</h3>
+          <p className="card-valor rejeitada">2</p>
         </div>
       </div>
 

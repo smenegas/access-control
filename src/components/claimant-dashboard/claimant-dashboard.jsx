@@ -6,6 +6,12 @@ import '../common/dashboards.css';
 
 function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
   const [menuAberto, setMenuAberto] = useState(false);
+  const [filtroProtocolo, setFiltroProtocolo] = useState('');
+  const [filtroSecretaria, setFiltroSecretaria] = useState('');
+  const [filtroStatus, setFiltroStatus] = useState('');
+  const [filtroPeriodo, setFiltroPeriodo] = useState('');
+  const [dataInicial, setDataInicial] = useState('');
+  const [dataFinal, setDataFinal] = useState('');
   const navigate = useNavigate();
   const user = getUser();
 
@@ -16,6 +22,11 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
 
   const handleAdminPanel = () => {
     navigate('/admin');
+  };
+
+  const converterDataSolicitacao = (data) => {
+    const [dia, mes, ano] = data.split('/').map(Number);
+    return new Date(ano, mes - 1, dia);
   };
 
   // Dados simulados (Mock) para o histórico do usuário
@@ -58,11 +69,119 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
     }
   ]);
 
+  const solicitacoesFiltradas = solicitacoes.filter((req) => {
+    const correspondeProtocolo = req.id.toLowerCase().includes(filtroProtocolo.toLowerCase());
+    const correspondeSecretaria = !filtroSecretaria || req.secretaria === filtroSecretaria;
+    const correspondeStatus = !filtroStatus || req.classeStatus === filtroStatus;
+    const dataSolicitacao = converterDataSolicitacao(req.data);
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    let dataMinima = null;
+    let dataMaxima = null;
+
+    if (filtroPeriodo === 'hoje') {
+      dataMinima = hoje;
+      dataMaxima = hoje;
+    } else if (filtroPeriodo === 'ultima-semana') {
+      dataMinima = new Date(hoje);
+      dataMinima.setDate(hoje.getDate() - 6);
+      dataMaxima = hoje;
+    } else if (filtroPeriodo === 'ultimo-mes') {
+      dataMinima = new Date(hoje);
+      dataMinima.setDate(hoje.getDate() - 29);
+      dataMaxima = hoje;
+    } else if (filtroPeriodo === 'personalizado') {
+      dataMinima = dataInicial ? new Date(`${dataInicial}T00:00:00`) : null;
+      dataMaxima = dataFinal ? new Date(`${dataFinal}T00:00:00`) : null;
+    }
+
+    const correspondePeriodo = (!dataMinima || dataSolicitacao >= dataMinima)
+      && (!dataMaxima || dataSolicitacao <= dataMaxima);
+
+    return correspondeProtocolo && correspondeSecretaria && correspondeStatus && correspondePeriodo;
+  });
+
   return (
     <div className="dashboard-container">
       {/* Cabeçalho */}
       
       <Header message="Bem-vindo(a)! Gerencie suas solicitações de pastas e sistemas." />
+
+      <div className="filtros-container">
+        <div className="filtro-campo filtro-protocolo">
+          <label htmlFor="filtro-protocolo">Protocolo</label>
+          <input
+            id="filtro-protocolo"
+            type="search"
+            placeholder="Buscar protocolo"
+            value={filtroProtocolo}
+            onChange={(event) => setFiltroProtocolo(event.target.value)}
+          />
+        </div>
+        <div className="filtro-campo">
+          <label htmlFor="filtro-secretaria">Secretaria</label>
+          <select
+            id="filtro-secretaria"
+            value={filtroSecretaria}
+            onChange={(event) => setFiltroSecretaria(event.target.value)}
+          >
+            <option value="">Todas as secretarias</option>
+            <option value="Secretaria da Fazenda">Secretaria da Fazenda</option>
+            <option value="Secretaria de Administração">Secretaria de Administração</option>
+            <option value="Secretaria de Saúde">Secretaria de Saúde</option>
+            <option value="Secretaria de Obras">Secretaria de Obras</option>
+          </select>
+        </div>
+        <div className="filtro-campo">
+          <label htmlFor="filtro-status">Status</label>
+          <select
+            id="filtro-status"
+            value={filtroStatus}
+            onChange={(event) => setFiltroStatus(event.target.value)}
+          >
+            <option value="">Todos os status</option>
+            <option value="status-aprovada">Aprovada</option>
+            <option value="status-pendente">Pendente</option>
+            <option value="status-rejeitada">Rejeitada</option>
+          </select>
+        </div>
+        <div className="filtro-campo filtro-periodo">
+          <label htmlFor="filtro-periodo">Período</label>
+          <select
+            id="filtro-periodo"
+            value={filtroPeriodo}
+            onChange={(event) => setFiltroPeriodo(event.target.value)}
+          >
+            <option value="">Todos os períodos</option>
+            <option value="hoje">Hoje</option>
+            <option value="ultima-semana">Última semana</option>
+            <option value="ultimo-mes">Último mês</option>
+            <option value="personalizado">Personalizado</option>
+          </select>
+        </div>
+        {filtroPeriodo === 'personalizado' && (
+          <div className="filtro-datas">
+            <div className="filtro-campo">
+              <label htmlFor="data-inicial">Data inicial</label>
+              <input
+                id="data-inicial"
+                type="date"
+                value={dataInicial}
+                onChange={(event) => setDataInicial(event.target.value)}
+              />
+            </div>
+            <div className="filtro-campo">
+              <label htmlFor="data-final">Data final</label>
+              <input
+                id="data-final"
+                type="date"
+                value={dataFinal}
+                onChange={(event) => setDataFinal(event.target.value)}
+              />
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Cartões de Resumo (Indicadores) */}
       <div className="cards-container">
@@ -77,6 +196,10 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
         <div className="card">
           <h3>Aprovadas na TI</h3>
           <p className="card-valor aprovada">10</p>
+        </div>
+        <div className="card">
+          <h3>Rejeitadas</h3>
+          <p className="card-valor rejeitada">1</p>
         </div>
       </div>
 
@@ -105,7 +228,7 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
               </tr>
             </thead>
             <tbody>
-              {solicitacoes.map((req) => (
+              {solicitacoesFiltradas.map((req) => (
                 <tr key={req.id}>
                   <td><strong>{req.id}</strong></td>
                   <td>{req.data}</td>
