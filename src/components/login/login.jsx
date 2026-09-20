@@ -91,6 +91,8 @@ export default function Login() {
           </button>
         </form>
 
+        {/* TODO:Criar mecanismo de recuperação de senha */}
+
         <div className="login-divider">
           <span>ou</span>
         </div>
