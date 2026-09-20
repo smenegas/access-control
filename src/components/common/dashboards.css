@@ -49,6 +49,10 @@
   margin-bottom: 20px;
 }
 
+.cabecalho-lista .btn-primario {
+  margin-left: auto;
+}
+
 .btn-primario {
   background-color: #2980b9;
   color: white;
