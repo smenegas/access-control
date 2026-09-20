@@ -30,7 +30,7 @@ export default function Header({ message }) {
         <header className="dashboard-header">
         <div className="dashboard-header-div-title">
           <h1 className="dashboard-header-title">Portal de Acessos - Prefeitura de Canela</h1>
-          <p style={{ margin: 0 }}>{message}</p>
+          {message && <p style={{ margin: 0 }}>{message}</p>}
         </div>
         <div className="usuario-info" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span className="avatar">{(user?.name || user?.nome || 'Usuário').charAt(0).toUpperCase()}</span>
