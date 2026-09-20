@@ -10,6 +10,7 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import EditAccount from './components/edit-account/edit-account';
 import ValidationAccounts from './components/validation-accounts/validation-accounts';
 import AccountEditUserSelected from './components/admin/account/account-edit-user-selected';
+import NewAccessRequisition from './components/access-requisition/new-access-requisition';
 import './App.css'
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path='/edit-account' element={<ProtectedRoute><EditAccount /></ProtectedRoute>} />
         <Route path='/validation-accounts' element={<ValidationAccounts />} />
         <Route path='/account-edit-user-selected' element={<ProtectedRoute><AccountEditUserSelected /></ProtectedRoute>} />
+        <Route path='/new-access-requisition' element={<ProtectedRoute><NewAccessRequisition /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );

@@ -24,6 +24,14 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
     navigate('/admin');
   };
 
+  const handleNewRequest = () => {
+    if (aoIniciarNovaSolicitacao) {
+      aoIniciarNovaSolicitacao();
+      return;
+    }
+    navigate('/new-access-requisition');
+  };
+
   const converterDataSolicitacao = (data) => {
     const [dia, mes, ano] = data.split('/').map(Number);
     return new Date(ano, mes - 1, dia);
@@ -209,7 +217,7 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
           <h2>Minhas Solicitações Recentes</h2>
           <button 
             className="btn-primario" 
-            onClick={aoIniciarNovaSolicitacao}
+            onClick={handleNewRequest}
           >
             + Nova Solicitação
           </button>
