@@ -4,14 +4,13 @@ import { logout, getUser } from '../../helpers/authentication';
 import Header from '../common/header';
 import '../common/dashboards.css';
 
-function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
-  const [menuAberto, setMenuAberto] = useState(false);
-  const [filtroProtocolo, setFiltroProtocolo] = useState('');
-  const [filtroSecretaria, setFiltroSecretaria] = useState('');
-  const [filtroStatus, setFiltroStatus] = useState('');
-  const [filtroPeriodo, setFiltroPeriodo] = useState('');
-  const [dataInicial, setDataInicial] = useState('');
-  const [dataFinal, setDataFinal] = useState('');
+function ClaimantDashboard() {
+  const [protocolFilter, setProtocolFilter] = useState('');
+  const [secretaryFilter, setSecretaryFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [periodFilter, setPeriodFilter] = useState('');
+  const [initialDate, setInitialDate] = useState('');
+  const [finalDate, setFinalDate] = useState('');
   const navigate = useNavigate();
   const user = getUser();
 
@@ -25,20 +24,16 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
   };
 
   const handleNewRequest = () => {
-    if (aoIniciarNovaSolicitacao) {
-      aoIniciarNovaSolicitacao();
-      return;
-    }
     navigate('/new-access-requisition');
   };
 
-  const converterDataSolicitacao = (data) => {
+  const convertRequestData = (data) => {
     const [dia, mes, ano] = data.split('/').map(Number);
     return new Date(ano, mes - 1, dia);
   };
 
   // Dados simulados (Mock) para o histórico do usuário
-  const [solicitacoes] = useState([
+  const [requests] = useState([
     {
       id: 'REQ-2026-0042',
       data: '05/04/2026',
@@ -77,36 +72,36 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
     }
   ]);
 
-  const solicitacoesFiltradas = solicitacoes.filter((req) => {
-    const correspondeProtocolo = req.id.toLowerCase().includes(filtroProtocolo.toLowerCase());
-    const correspondeSecretaria = !filtroSecretaria || req.secretaria === filtroSecretaria;
-    const correspondeStatus = !filtroStatus || req.classeStatus === filtroStatus;
-    const dataSolicitacao = converterDataSolicitacao(req.data);
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-    let dataMinima = null;
-    let dataMaxima = null;
+  const filteredRequests = requests.filter((req) => {
+    const correspondsProtocol = req.id.toLowerCase().includes(protocolFilter.toLowerCase());
+    const correspondsSecretary = !secretaryFilter || req.secretaria === secretaryFilter;
+    const correspondsStatus = !statusFilter || req.classeStatus === statusFilter;
+    const requestData = convertRequestData(req.data);
+    const toDay = new Date();
+    toDay.setHours(0, 0, 0, 0);
+    let minDate = null;
+    let maxDate = null;
 
-    if (filtroPeriodo === 'hoje') {
-      dataMinima = hoje;
-      dataMaxima = hoje;
-    } else if (filtroPeriodo === 'ultima-semana') {
-      dataMinima = new Date(hoje);
-      dataMinima.setDate(hoje.getDate() - 6);
-      dataMaxima = hoje;
-    } else if (filtroPeriodo === 'ultimo-mes') {
-      dataMinima = new Date(hoje);
-      dataMinima.setDate(hoje.getDate() - 29);
-      dataMaxima = hoje;
-    } else if (filtroPeriodo === 'personalizado') {
-      dataMinima = dataInicial ? new Date(`${dataInicial}T00:00:00`) : null;
-      dataMaxima = dataFinal ? new Date(`${dataFinal}T00:00:00`) : null;
+    if (periodFilter === 'hoje') {
+      minDate = toDay;
+      maxDate = toDay;
+    } else if (periodFilter === 'ultima-semana') {
+      minDate = new Date(toDay);
+      minDate.setDate(toDay.getDate() - 6);
+      maxDate = toDay;
+    } else if (periodFilter === 'ultimo-mes') {
+      minDate = new Date(toDay);
+      minDate.setDate(toDay.getDate() - 29);
+      maxDate = toDay;
+    } else if (periodFilter === 'personalizado') {
+      minDate = initialDate ? new Date(`${initialDate}T00:00:00`) : null;
+      maxDate = finalDate ? new Date(`${finalDate}T00:00:00`) : null;
     }
 
-    const correspondePeriodo = (!dataMinima || dataSolicitacao >= dataMinima)
-      && (!dataMaxima || dataSolicitacao <= dataMaxima);
+    const correspondsPeriod = (!minDate || requestData >= minDate)
+      && (!maxDate || requestData <= maxDate);
 
-    return correspondeProtocolo && correspondeSecretaria && correspondeStatus && correspondePeriodo;
+    return correspondsProtocol && correspondsSecretary && correspondsStatus && correspondsPeriod;
   });
 
   return (
@@ -122,16 +117,16 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
             id="filtro-protocolo"
             type="search"
             placeholder="Buscar protocolo"
-            value={filtroProtocolo}
-            onChange={(event) => setFiltroProtocolo(event.target.value)}
+            value={protocolFilter}
+            onChange={(event) => setProtocolFilter(event.target.value)}
           />
         </div>
         <div className="filtro-campo">
           <label htmlFor="filtro-secretaria">Secretaria</label>
           <select
             id="filtro-secretaria"
-            value={filtroSecretaria}
-            onChange={(event) => setFiltroSecretaria(event.target.value)}
+            value={secretaryFilter}
+            onChange={(event) => setSecretaryFilter(event.target.value)}
           >
             <option value="">Todas as secretarias</option>
             <option value="Secretaria da Fazenda">Secretaria da Fazenda</option>
@@ -144,8 +139,8 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
           <label htmlFor="filtro-status">Status</label>
           <select
             id="filtro-status"
-            value={filtroStatus}
-            onChange={(event) => setFiltroStatus(event.target.value)}
+            value={statusFilter}
+            onChange={(event) => setStatusFilter(event.target.value)}
           >
             <option value="">Todos os status</option>
             <option value="status-aprovada">Aprovada</option>
@@ -157,8 +152,8 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
           <label htmlFor="filtro-periodo">Período</label>
           <select
             id="filtro-periodo"
-            value={filtroPeriodo}
-            onChange={(event) => setFiltroPeriodo(event.target.value)}
+            value={periodFilter}
+            onChange={(event) => setPeriodFilter(event.target.value)}
           >
             <option value="">Todos os períodos</option>
             <option value="hoje">Hoje</option>
@@ -167,15 +162,15 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
             <option value="personalizado">Personalizado</option>
           </select>
         </div>
-        {filtroPeriodo === 'personalizado' && (
+        {periodFilter === 'personalizado' && (
           <div className="filtro-datas">
             <div className="filtro-campo">
               <label htmlFor="data-inicial">Data inicial</label>
               <input
                 id="data-inicial"
                 type="date"
-                value={dataInicial}
-                onChange={(event) => setDataInicial(event.target.value)}
+                value={initialDate}
+                onChange={(event) => setInitialDate(event.target.value)}
               />
             </div>
             <div className="filtro-campo">
@@ -183,8 +178,8 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
               <input
                 id="data-final"
                 type="date"
-                value={dataFinal}
-                onChange={(event) => setDataFinal(event.target.value)}
+                value={finalDate}
+                onChange={(event) => setFinalDate(event.target.value)}
               />
             </div>
           </div>
@@ -236,7 +231,7 @@ function ClaimantDashboard({ aoIniciarNovaSolicitacao }) {
               </tr>
             </thead>
             <tbody>
-              {solicitacoesFiltradas.map((req) => (
+              {filteredRequests.map((req) => (
                 <tr key={req.id}>
                   <td><strong>{req.id}</strong></td>
                   <td>{req.data}</td>
