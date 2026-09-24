@@ -209,7 +209,7 @@ function ClaimantDashboard() {
       {/* Ação Principal e Tabela */}
       <div className="conteudo-principal">
         <div className="cabecalho-lista">
-          <h2>Minhas Solicitações Recentes</h2>
+          <h2>Minhas Solicitações</h2>
           <button 
             className="btn-primario" 
             onClick={handleNewRequest}
