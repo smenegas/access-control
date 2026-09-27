@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUser } from '../../helpers/authentication';
+import { getUserDataByToken } from '../../helpers/users/users';
 import { getFolders } from '../../helpers/folders/network-folders';
 import { LoadMenuTree } from '../../helpers/system-menu/system-menu';
 import Header from '../common/header';
@@ -50,17 +50,44 @@ function MenuOption({ menu, selectedMenus, onToggle }) {
 }
 
 export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolicitacao }) {
+	const [userFromToken, setUserFromToken] = useState(null);
+
+	useEffect(() => {
+		let mounted = true;
+
+		const loadUser = async () => {
+			const userData = await getUserDataByToken();
+			if (mounted) setUserFromToken(userData);
+		};
+
+		loadUser();
+		return () => {
+			mounted = false;
+		};
+	}, []);
+
 	const navigate = useNavigate();
-	const user = getUser() || {};
 	const [formData, setFormData] = useState({
-		name: user.name || '',
-		email: user.email || '',
+		name: '',
+		email: '',
 		position: '',
-		registration: '',
+		registration_number: '',
 		cpf: '',
 		employmentType: '',
 		justification: ''
 	});
+
+	useEffect(() => {
+		if (!userFromToken) return;
+
+		setFormData((previous) => ({
+			...previous,
+			name: previous.name || userFromToken.name || '',
+			email: previous.email || userFromToken.email || '',
+			registration_number: previous.registration_number || userFromToken.registration_number || ''
+		}));
+	}, [userFromToken]);
+	
 	const [menuTree, setMenuTree] = useState([]);
 	const [folders, setFolders] = useState([]);
 	const [selectedMenus, setSelectedMenus] = useState([]);
@@ -101,6 +128,8 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 			mounted = false;
 		};
 	}, []);
+
+	//console.log('User from token:', userFromToken);
 
 	const updateField = (event) => {
 		const { name, value } = event.target;
@@ -195,7 +224,7 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 						<div className="requisicao-form-grid">
                             <div className="requisicao-input-group">
 								<label htmlFor="request-registration">Matrícula <span className="requisicao-label-optional">(opcional)</span></label>
-								<input id="request-registration" name="registration" className="requisicao-input" value={formData.registration} onChange={updateField} />
+								<input id="request-registration" name="registration_number" className="requisicao-input" value={formData.registration_number} onChange={updateField} />
 							</div>
                             <div className="requisicao-input-group">
 								<label htmlFor="request-cpf">CPF</label>
@@ -222,6 +251,23 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 							<div className="requisicao-input-group">
 								<label htmlFor="request-position">Cargo</label>
 								<input id="request-position" name="position" className="requisicao-input" placeholder="Informe seu cargo" value={formData.position} onChange={updateField} required />
+							</div>
+							{/*TODO: Carregar os nomes das Secretarias */}
+							<div className="requisicao-input-group">
+								<label htmlFor="request-secretary">Secretaria</label>
+								<select
+									id="request-secretary"
+									name="secretary"
+									className="requisicao-input"
+									value={formData.secretary}
+									onChange={updateField}
+									required
+								>
+									<option value="">Selecione a secretaria</option>
+									<option value="secretaria-1">Secretaria 1</option>
+									<option value="secretaria-2">Secretaria 2</option>
+									<option value="secretaria-3">Secretaria 3</option>
+								</select>
 							</div>
 							<div className="requisicao-input-group">
 								<label htmlFor="request-employment-type">Vínculo funcional</label>
