@@ -132,6 +132,39 @@ export async function fetchUserByToken() {
   }
 }
 
+//Fucntion to return user data by token
+export async function getUserDataByToken() {
+  let token = getToken();
+  if (!token) return null;
+
+  // Verifica se o token está expirado e tenta renovar
+  if (isTokenExpired(token)) {
+    try {
+      const data = await refreshTokenRequest();
+      token = data.accessToken;
+    } catch (err) {
+      throw new Error('Token expirado. Usuário deve reautenticar.');
+    }
+  }
+
+  //Get user id from token
+  const user = getUserFromToken(token);
+  if (!user) return null;
+
+  try {
+    const fetchUser = await fetch(`${API_BASE_URL}/users/${user.id}`, {
+      headers: getAuthHeaders()
+    });
+    if (!fetchUser.ok) {
+      throw new Error('Erro ao buscar usuário.');
+    }
+    const userData = await fetchUser.json();
+    return userData;
+  } catch (error) {
+    throw new Error('Erro ao buscar usuário: ' + error.message);
+  }
+}
+
 // Nova função para atualizar o perfil do usuário
 //Essa função deve ser usada quano o prório usuário que está logado tenta atualizar seu perfil.
 export async function updateUserProfile(updates) {
