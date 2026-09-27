@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUserDataByToken } from '../../helpers/users/users';
 import { getFolders } from '../../helpers/folders/network-folders';
+import { getSecretaries } from '../../helpers/secretaries/secretaries';
 import { LoadMenuTree } from '../../helpers/system-menu/system-menu';
 import Header from '../common/header';
 import './new-access-requisition.css';
@@ -51,6 +52,7 @@ function MenuOption({ menu, selectedMenus, onToggle }) {
 
 export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolicitacao }) {
 	const [userFromToken, setUserFromToken] = useState(null);
+	const [secretaries, setSecretaries] = useState([]);
 
 	useEffect(() => {
 		let mounted = true;
@@ -130,6 +132,22 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 	}, []);
 
 	//console.log('User from token:', userFromToken);
+
+	const loadSecretaries = async () => {
+		try {
+			const secretariesResponse = await getSecretaries();
+			setSecretaries(getCollection(secretariesResponse));
+		} catch (error) {
+			setMessage({
+				text: error.message || 'Não foi possível carregar as secretarias.',
+				type: 'erro'
+			});
+		}
+	};
+
+	useEffect(() => {
+		loadSecretaries();
+	}, []);
 
 	const updateField = (event) => {
 		const { name, value } = event.target;
@@ -252,7 +270,6 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 								<label htmlFor="request-position">Cargo</label>
 								<input id="request-position" name="position" className="requisicao-input" placeholder="Informe seu cargo" value={formData.position} onChange={updateField} required />
 							</div>
-							{/*TODO: Carregar os nomes das Secretarias */}
 							<div className="requisicao-input-group">
 								<label htmlFor="request-secretary">Secretaria</label>
 								<select
@@ -264,9 +281,11 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 									required
 								>
 									<option value="">Selecione a secretaria</option>
-									<option value="secretaria-1">Secretaria 1</option>
-									<option value="secretaria-2">Secretaria 2</option>
-									<option value="secretaria-3">Secretaria 3</option>
+									{secretaries.map((secretary) => (
+										<option key={getItemId(secretary)} value={getItemId(secretary)}>
+											{getItemName(secretary)}
+										</option>
+									))}
 								</select>
 							</div>
 							<div className="requisicao-input-group">
