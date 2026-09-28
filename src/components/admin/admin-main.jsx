@@ -64,6 +64,7 @@ export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
             {activeUserSubmenu === 'redefinir' && (<ResetPassword />)}
         </div>
         );
+        case 'vinculos': return <h2>Tipos de Vínculos</h2>;
         default: return (
         <AdminInstructions user={null} />
         );

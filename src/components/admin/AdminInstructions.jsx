@@ -11,6 +11,7 @@ export default function AdminInstructions({ user }) {
         <li><strong>📁 Pastas de Rede:</strong> Controle o acesso às pastas compartilhadas.</li>
         <li><strong>🖥️ Sistemas e Menus:</strong> Configure módulos e menus do sistema.</li>
         <li><strong>👥 Usuários:</strong> Administre usuários e permissões.</li>
+        <li><strong>🤝 Tipos de Vínculos:</strong> Gerencie os tipos de vínculos.</li>
       </ul>
     </div>
   );

@@ -45,6 +45,12 @@ export default function AdminSidebar({ activeTab, setActiveTab, activeUserSubmen
                 <button className={activeUserSubmenu === 'redefinir' ? 'ativo' : ''} onClick={() => setActiveUserSubmenu('redefinir')}>🔑 Redefinir Senha</button>
               </div>
             )}
+            <button
+              className={activeTab === 'vinculos' ? 'ativo' : ''}
+              onClick={() => setActiveTab('vinculos')}
+            >
+              🤝 Tipos de Vínculos
+            </button>
             <button 
               className="logout-btn" 
               onClick={logout}
