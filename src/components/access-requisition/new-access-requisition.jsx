@@ -292,6 +292,9 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 							</div>
 							<div className="requisicao-input-group">
 								<label htmlFor="request-employment-type">Vínculo funcional</label>
+								{/* TODO: Quando o usuário escolher contrato temporário,
+								estagiário, terceirizado ou conveniado o sistema deve exibir
+								uma mensagem informado sobre os arquivos que devem ser anexados*/}
 								<select
 									id="request-employment-type"
 									name="employmentType"
@@ -311,8 +314,8 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 							</div>
 						</div>
 						<div className="requisicao-input-group">
-							<label htmlFor="request-justification">Justificativa</label>
-							<textarea id="request-justification" name="justification" className="requisicao-input requisicao-textarea" placeholder="Descreva a necessidade desses acessos" value={formData.justification} onChange={updateField} required />
+							<label htmlFor="request-justification">Justificativa<span className="requisicao-label-optional">&nbsp;(opcional)</span></label>
+							<textarea id="request-justification" name="justification" className="requisicao-input requisicao-textarea" placeholder="Descreva a necessidade desses acessos" value={formData.justification} onChange={updateField} />
 						</div>
 						<div className="requisicao-input-group">
 							<label htmlFor="request-attachment">Anexos</label>
