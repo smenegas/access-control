@@ -73,6 +73,7 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 		name: '',
 		email: '',
 		position: '',
+		secretary: '',
 		registration_number: '',
 		cpf: '',
 		employmentType: '',
@@ -86,6 +87,7 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 			...previous,
 			name: previous.name || userFromToken.name || '',
 			email: previous.email || userFromToken.email || '',
+			secretary: previous.secretary || userFromToken.secretary_id || '',
 			registration_number: previous.registration_number || userFromToken.registration_number || ''
 		}));
 	}, [userFromToken]);
