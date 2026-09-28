@@ -269,7 +269,7 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 								<input id="request-email" name="email" type="email" className="requisicao-input" value={formData.email} onChange={updateField} required />
 							</div>
 							<div className="requisicao-input-group">
-								<label htmlFor="request-position">Cargo<span className="requisicao-label-optional">(opcional)</span></label>
+								<label htmlFor="request-position">Cargo<span className="requisicao-label-optional">&nbsp;(opcional)</span></label>
 								<input id="request-position" name="position" className="requisicao-input" placeholder="Informe seu cargo" value={formData.position} onChange={updateField} />
 							</div>
 							<div className="requisicao-input-group">
