@@ -9,6 +9,7 @@ import {
   refreshTokenRequest 
 } from '../../helpers/authentication';
 import SecretaryManagement from './secretary/secretary-management';
+import RelationshipsManagements from './relationships/relationships-managements';
 import AdminInstructions from './AdminInstructions';
 import AccountEdit from "./account/account-edit";
 import AccountMangement from './account/account-management';
@@ -64,7 +65,7 @@ export default function AdminMain({ activeTab, activeUserSubmenu, user }) {
             {activeUserSubmenu === 'redefinir' && (<ResetPassword />)}
         </div>
         );
-        case 'vinculos': return <h2>Tipos de Vínculos</h2>;
+        case 'vinculos': return <RelationshipsManagements />;
         default: return (
         <AdminInstructions user={null} />
         );
