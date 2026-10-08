@@ -4,6 +4,7 @@ import { getUserDataByToken } from '../../helpers/users/users';
 import { getFolders } from '../../helpers/folders/network-folders';
 import { getSecretaries } from '../../helpers/secretaries/secretaries';
 import { LoadMenuTree } from '../../helpers/system-menu/system-menu';
+import { getRelationships } from '../../helpers/relationships/relationships';
 import Header from '../common/header';
 import './new-access-requisition.css';
 
@@ -76,7 +77,7 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 		secretary: '',
 		registration_number: '',
 		cpf: '',
-		employmentType: '',
+		relationship: '',
 		justification: ''
 	});
 
@@ -88,7 +89,8 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 			name: previous.name || userFromToken.name || '',
 			email: previous.email || userFromToken.email || '',
 			secretary: previous.secretary || userFromToken.secretary_id || '',
-			registration_number: previous.registration_number || userFromToken.registration_number || ''
+			registration_number: previous.registration_number || userFromToken.registration_number || '',
+			relationship: previous.relationship || userFromToken.relationship || ''
 		}));
 	}, [userFromToken]);
 	
@@ -100,7 +102,8 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 	const [loadingOptions, setLoadingOptions] = useState(true);
 	const [loadingSubmit, setLoadingSubmit] = useState(false);
 	const [message, setMessage] = useState({ text: '', type: '' });
-
+	const [relationships, setRelationships] = useState([]);
+	const [uploadFieldMessage, setUploadFieldMessage] = useState('');
 	useEffect(() => {
 		let mounted = true;
 
@@ -133,8 +136,24 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 		};
 	}, []);
 
+	useEffect(() => {
+		loadRelationships();
+	}, []);
+
 	//console.log('User from token:', userFromToken);
 
+	const loadRelationships = async () => {
+		try {
+			const relationshipsResponse = await getRelationships();
+			setRelationships(getCollection(relationshipsResponse));
+		} catch (error) {
+			setMessage({
+				text: error.message || 'Não foi possível carregar os vínculos funcionais.',
+				type: 'erro'
+			});
+		}
+	};
+	
 	const loadSecretaries = async () => {
 		try {
 			const secretariesResponse = await getSecretaries();
@@ -214,6 +233,14 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 		}
 	};
 
+	// Function to get the message from relationships based on the selected relationship
+	const getRelationshipMessage = (relationshipId) => {
+		const relationship = relationships.find(
+			(rel) => String(getItemId(rel)) === relationshipId
+		);
+		return relationship?.message || '';
+	};
+
 	const returnToDashboard = () => {
 		if (aoVoltarDashboard) {
 			aoVoltarDashboard();
@@ -291,25 +318,30 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 								</select>
 							</div>
 							<div className="requisicao-input-group">
-								<label htmlFor="request-employment-type">Vínculo funcional</label>
-								{/* TODO: Quando o usuário escolher contrato temporário,
-								estagiário, terceirizado ou conveniado o sistema deve exibir
-								uma mensagem informado sobre os arquivos que devem ser anexados*/}
+								<label htmlFor="request-relationship">Vínculo funcional</label>
+								
 								<select
-									id="request-employment-type"
-									name="employmentType"
+									id="request-relationship"
+									name="relationship"
 									className="requisicao-input"
-									value={formData.employmentType}
-									onChange={updateField}
+									value={formData.relationship}
+									onChange={(event) => {
+										updateField(event);
+										setUploadFieldMessage(getRelationshipMessage(event.target.value));
+									}}
 									required
 								>
-									<option value="">Selecione o vínculo</option>
-									<option value="concursado">Funcionário concursado</option>
-									<option value="cargo-comissao">Cargo em comissão</option>
-									<option value="contrato-temporario">Contrato temporário</option>
-									<option value="estagiario">Estagiário</option>
-									<option value="terceirizado">Terceirizado</option>
-									<option value="conveniado">Conveniado</option>
+									{relationships.length === 0 && (
+										<option value="">Não há vínculos disponíveis</option>
+									)}
+									{relationships.length > 0 && (
+										<option value="">Selecione o vínculo</option>
+									)}
+									{relationships.map((relationship) => (
+										<option key={getItemId(relationship)} value={getItemId(relationship)}>
+											{getItemName(relationship)}
+										</option>
+									))}
 								</select>
 							</div>
 						</div>
@@ -317,6 +349,13 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 							<label htmlFor="request-justification">Justificativa<span className="requisicao-label-optional">&nbsp;(opcional)</span></label>
 							<textarea id="request-justification" name="justification" className="requisicao-input requisicao-textarea" placeholder="Descreva a necessidade desses acessos" value={formData.justification} onChange={updateField} />
 						</div>
+
+						{uploadFieldMessage && (
+							<div className="requisicao-relationship-message">
+								<p>{uploadFieldMessage}</p>
+							</div>
+						)}
+
 						<div className="requisicao-input-group">
 							<label htmlFor="request-attachment">Anexos</label>
 							<input
@@ -359,6 +398,7 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 							<h2>Recursos solicitados</h2>
 							<span>Selecione um ou mais itens</span>
 						</div>
+						{/* TODO: The message below should be displayed with the error message style. */}
 						{loadingOptions ? (
 							<p className="requisicao-empty-state">Carregando opções de acesso...</p>
 						) : (
