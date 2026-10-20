@@ -7,6 +7,7 @@ import { LoadMenuTree } from '../../helpers/system-menu/system-menu';
 import { getRelationships } from '../../helpers/relationships/relationships';
 import Header from '../common/header';
 import './new-access-requisition.css';
+import '../common/messages.css';
 
 function getCollection(data) {
 	if (Array.isArray(data)) return data;
@@ -351,7 +352,7 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 						</div>
 
 						{uploadFieldMessage && (
-							<div className="requisicao-relationship-message">
+							<div className="warning-message" role="alert">
 								<p>{uploadFieldMessage}</p>
 							</div>
 						)}
@@ -398,7 +399,6 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 							<h2>Recursos solicitados</h2>
 							<span>Selecione um ou mais itens</span>
 						</div>
-						{/* TODO: The message below should be displayed with the error message style. */}
 						{loadingOptions ? (
 							<p className="requisicao-empty-state">Carregando opções de acesso...</p>
 						) : (
