@@ -143,6 +143,12 @@
   resize: vertical;
 }
 
+.requisicao-character-count {
+  align-self: flex-end;
+  color: #6c757d;
+  font-size: 12px;
+}
+
 .requisicao-file-input {
   position: absolute;
   width: 1px;

@@ -79,6 +79,7 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 		registration_number: '',
 		cpf: '',
 		relationship: '',
+		observations: '',
 		justification: ''
 	});
 
@@ -211,10 +212,10 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 		event.preventDefault();
 		setMessage({ text: '', type: '' });
 
-		if (selectedMenus.length === 0 && selectedFolders.length === 0) {
+		/*if (selectedMenus.length === 0 && selectedFolders.length === 0) {
 			setMessage({ text: 'Selecione pelo menos um menu ou uma pasta de rede.', type: 'erro' });
 			return;
-		}
+		}*/
 
 		const requestData = {
 			...formData,
@@ -347,8 +348,34 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 							</div>
 						</div>
 						<div className="requisicao-input-group">
+							<label htmlFor="request-observations">Observações<span className="requisicao-label-optional">&nbsp;(opcional)</span></label>
+							<textarea
+								id="request-observations"
+								name="observations"
+								className="requisicao-input requisicao-textarea"
+								placeholder="Escreva aqui qualquer observação que julgar necessária"
+								value={formData.observations}
+								onChange={updateField}
+								maxLength={500}
+							/>
+							<span className="requisicao-character-count" aria-live="polite">
+								{formData.observations.length}/500 caracteres
+							</span>
+						</div>
+						<div className="requisicao-input-group">
 							<label htmlFor="request-justification">Justificativa<span className="requisicao-label-optional">&nbsp;(opcional)</span></label>
-							<textarea id="request-justification" name="justification" className="requisicao-input requisicao-textarea" placeholder="Descreva a necessidade desses acessos" value={formData.justification} onChange={updateField} />
+							<textarea
+								id="request-justification"
+								name="justification"
+								className="requisicao-input requisicao-textarea"
+								placeholder="Descreva a necessidade desses acessos"
+								value={formData.justification}
+								onChange={updateField}
+								maxLength={500}
+							/>
+							<span className="requisicao-character-count" aria-live="polite">
+								{formData.justification.length}/500 caracteres
+							</span>
 						</div>
 
 						{uploadFieldMessage && (
