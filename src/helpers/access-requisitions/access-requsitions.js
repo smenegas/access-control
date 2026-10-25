@@ -73,6 +73,7 @@ export const createAccessRequisition = async (data) => {
       throw new Error(err);
     }
   }
+  //console.log('Creating access requisition with data:', data);
   const res = await fetch(`${API_BASE_URL}/access-requisitions`, {
     method: 'POST',
     headers: {
@@ -138,6 +139,41 @@ export const deleteAccessRequisition = async (id) => {
   });
   if (!res.ok) {
     throw new Error('Erro ao deletar requisição de acesso.');
+  }
+  return res.json();
+};
+
+// Function which upload files to the server
+export const uploadFiles = async (files, requisitionId) => {
+  let token = getToken();
+  if (!token) throw new Error('Usuário não autenticado');
+
+  if (isTokenExpired(token)) {
+    // Attempt to refresh the token
+    try {
+      const data = await refreshTokenRequest();
+      token = data.accessToken;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  const formData = new FormData();
+  formData.append('access_request_id', requisitionId);
+  files.forEach(file => {
+    formData.append('files', file);
+  });
+
+  const res = await fetch(`${API_BASE_URL}/files/upload`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    },
+    body: formData
+  });
+
+  if (!res.ok) {
+    throw new Error('Erro ao enviar arquivos.');
   }
   return res.json();
 };

@@ -5,6 +5,7 @@ import { getFolders } from '../../helpers/folders/network-folders';
 import { getSecretaries } from '../../helpers/secretaries/secretaries';
 import { LoadMenuTree } from '../../helpers/system-menu/system-menu';
 import { getRelationships } from '../../helpers/relationships/relationships';
+import { uploadFiles, createAccessRequisition } from '../../helpers/access-requisitions/access-requsitions';
 import Header from '../common/header';
 import './new-access-requisition.css';
 import '../common/messages.css';
@@ -52,7 +53,7 @@ function MenuOption({ menu, selectedMenus, onToggle }) {
 	);
 }
 
-export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolicitacao }) {
+export default function NewAccessRequisition() {
 	const [userFromToken, setUserFromToken] = useState(null);
 	const [secretaries, setSecretaries] = useState([]);
 
@@ -75,11 +76,11 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 		name: '',
 		email: '',
 		position: '',
-		secretary: '',
+		secretary_id: '',
 		registration_number: '',
 		cpf: '',
-		relationship: '',
-		observations: '',
+		relationship_id: '',
+		obs: '',
 		justification: ''
 	});
 
@@ -90,9 +91,9 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 			...previous,
 			name: previous.name || userFromToken.name || '',
 			email: previous.email || userFromToken.email || '',
-			secretary: previous.secretary || userFromToken.secretary_id || '',
+			secretary_id: previous.secretary_id || userFromToken.secretary_id || '',
 			registration_number: previous.registration_number || userFromToken.registration_number || '',
-			relationship: previous.relationship || userFromToken.relationship || ''
+			relationship_id: previous.relationship_id || userFromToken.relationship_id || ''
 		}));
 	}, [userFromToken]);
 	
@@ -141,8 +142,6 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 	useEffect(() => {
 		loadRelationships();
 	}, []);
-
-	//console.log('User from token:', userFromToken);
 
 	const loadRelationships = async () => {
 		try {
@@ -212,11 +211,6 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 		event.preventDefault();
 		setMessage({ text: '', type: '' });
 
-		/*if (selectedMenus.length === 0 && selectedFolders.length === 0) {
-			setMessage({ text: 'Selecione pelo menos um menu ou uma pasta de rede.', type: 'erro' });
-			return;
-		}*/
-
 		const requestData = {
 			...formData,
 			menus: selectedMenus,
@@ -224,14 +218,38 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 			attachments: selectedFiles.map(({ file }) => file)
 		};
 
-		setLoadingSubmit(true);
+		// Send the request data to the server
 		try {
-			if (aoEnviarSolicitacao) await aoEnviarSolicitacao(requestData);
-			setMessage({ text: 'Solicitação preparada com sucesso.', type: 'sucesso' });
+			const requestDataAux = { ...requestData };
+			delete requestDataAux.attachments; // Remove attachments for logging
+			delete requestDataAux.menus; // Remove menus for logging
+			delete requestDataAux.folders; // Remove folders for logging
+			const createResponse = await createAccessRequisition(requestDataAux);
+			// Check if the response is valid
+			if (!createResponse || !createResponse.id) {
+				setMessage({ text: 'Não foi possível enviar a solicitação.', type: 'erro' });
+				return;
+			}
+			if (requestData.attachments.length > 0 && createResponse.id.length > 0) {
+				const requisitionId = createResponse.id[0]; // Assuming the first ID is the one we want
+				// Upload the files associated with the requisition
+				try {
+					setLoadingSubmit(true);
+					const uploadResponse = await uploadFiles(requestData.attachments, requisitionId);
+					setMessage({ text: 'Solicitação enviada com sucesso. Arquivos enviados: ' + uploadResponse.files.length, type: 'sucesso' });
+				} catch (error) {
+					setMessage({ text: error.message || 'Não foi possível enviar os arquivos anexados.', type: 'erro' });
+					return;
+				}
+				finally {
+					setLoadingSubmit(false);
+				}
+			}
+			// TODO: Handle success, e.g., navigate to another page or reset the form
+
 		} catch (error) {
 			setMessage({ text: error.message || 'Não foi possível enviar a solicitação.', type: 'erro' });
-		} finally {
-			setLoadingSubmit(false);
+			return;
 		}
 	};
 
@@ -299,15 +317,22 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 							</div>
 							<div className="requisicao-input-group">
 								<label htmlFor="request-position">Cargo<span className="requisicao-label-optional">&nbsp;(opcional)</span></label>
-								<input id="request-position" name="position" className="requisicao-input" placeholder="Informe seu cargo" value={formData.position} onChange={updateField} />
+								<input 
+									id="request-position" 
+									name="position" 
+									className="requisicao-input" 
+									placeholder="Informe seu cargo" 
+									value={formData.position} 
+									onChange={updateField} 
+								/>
 							</div>
 							<div className="requisicao-input-group">
 								<label htmlFor="request-secretary">Secretaria</label>
 								<select
 									id="request-secretary"
-									name="secretary"
+									name="secretary_id"
 									className="requisicao-input"
-									value={formData.secretary}
+									value={formData.secretary_id}
 									onChange={updateField}
 									required
 								>
@@ -324,9 +349,9 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 								
 								<select
 									id="request-relationship"
-									name="relationship"
+									name="relationship_id"
 									className="requisicao-input"
-									value={formData.relationship}
+									value={formData.relationship_id}
 									onChange={(event) => {
 										updateField(event);
 										setUploadFieldMessage(getRelationshipMessage(event.target.value));
@@ -351,15 +376,15 @@ export default function NewAccessRequisition({ aoVoltarDashboard, aoEnviarSolici
 							<label htmlFor="request-observations">Observações<span className="requisicao-label-optional">&nbsp;(opcional)</span></label>
 							<textarea
 								id="request-observations"
-								name="observations"
+								name="obs"
 								className="requisicao-input requisicao-textarea"
 								placeholder="Escreva aqui qualquer observação que julgar necessária"
-								value={formData.observations}
+								value={formData.obs}
 								onChange={updateField}
 								maxLength={500}
 							/>
 							<span className="requisicao-character-count" aria-live="polite">
-								{formData.observations.length}/500 caracteres
+								{formData.obs.length}/500 caracteres
 							</span>
 						</div>
 						<div className="requisicao-input-group">
