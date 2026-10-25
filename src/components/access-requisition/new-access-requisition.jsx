@@ -7,6 +7,7 @@ import { LoadMenuTree } from '../../helpers/system-menu/system-menu';
 import { getRelationships } from '../../helpers/relationships/relationships';
 import { uploadFiles, createAccessRequisition } from '../../helpers/access-requisitions/access-requsitions';
 import Header from '../common/header';
+import AccessRequisitionSuccess from './access-requisition-success';
 import './new-access-requisition.css';
 import '../common/messages.css';
 
@@ -105,6 +106,7 @@ export default function NewAccessRequisition() {
 	const [loadingOptions, setLoadingOptions] = useState(true);
 	const [loadingSubmit, setLoadingSubmit] = useState(false);
 	const [message, setMessage] = useState({ text: '', type: '' });
+	const [submissionSuccess, setSubmissionSuccess] = useState(null);
 	const [relationships, setRelationships] = useState([]);
 	const [uploadFieldMessage, setUploadFieldMessage] = useState('');
 	useEffect(() => {
@@ -210,6 +212,7 @@ export default function NewAccessRequisition() {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		setMessage({ text: '', type: '' });
+		setLoadingSubmit(true);
 
 		const requestData = {
 			...formData,
@@ -225,31 +228,38 @@ export default function NewAccessRequisition() {
 			delete requestDataAux.menus; // Remove menus for logging
 			delete requestDataAux.folders; // Remove folders for logging
 			const createResponse = await createAccessRequisition(requestDataAux);
-			// Check if the response is valid
 			if (!createResponse || !createResponse.id) {
 				setMessage({ text: 'Não foi possível enviar a solicitação.', type: 'erro' });
 				return;
 			}
-			if (requestData.attachments.length > 0 && createResponse.id.length > 0) {
-				const requisitionId = createResponse.id[0]; // Assuming the first ID is the one we want
-				// Upload the files associated with the requisition
-				try {
-					setLoadingSubmit(true);
-					const uploadResponse = await uploadFiles(requestData.attachments, requisitionId);
-					setMessage({ text: 'Solicitação enviada com sucesso. Arquivos enviados: ' + uploadResponse.files.length, type: 'sucesso' });
-				} catch (error) {
-					setMessage({ text: error.message || 'Não foi possível enviar os arquivos anexados.', type: 'erro' });
+
+			const requisitionId = Array.isArray(createResponse.id)
+				? createResponse.id[0]
+				: createResponse.id;
+			if (requestData.attachments.length > 0) {
+				if (!requisitionId) {
+					setMessage({ text: 'Não foi possível identificar a solicitação para enviar os arquivos.', type: 'erro' });
 					return;
 				}
-				finally {
-					setLoadingSubmit(false);
-				}
-			}
-			// TODO: Handle success, e.g., navigate to another page or reset the form
 
+				await uploadFiles(requestData.attachments, requisitionId);
+			}
+
+			setSubmissionSuccess({
+				files: selectedFiles.map(({ id, file }) => ({
+					id,
+					name: file.name,
+					type: file.type,
+					size: file.size
+				}))
+			});
 		} catch (error) {
-			setMessage({ text: error.message || 'Não foi possível enviar a solicitação.', type: 'erro' });
-			return;
+			setMessage({
+				text: error.message || 'Não foi possível enviar a solicitação ou os arquivos anexados.',
+				type: 'erro'
+			});
+		} finally {
+			setLoadingSubmit(false);
 		}
 	};
 
@@ -262,12 +272,17 @@ export default function NewAccessRequisition() {
 	};
 
 	const returnToDashboard = () => {
-		if (aoVoltarDashboard) {
-			aoVoltarDashboard();
-			return;
-		}
 		navigate('/dashboard');
 	};
+
+	if (submissionSuccess) {
+		return (
+			<AccessRequisitionSuccess
+				files={submissionSuccess.files}
+				onReturn={returnToDashboard}
+			/>
+		);
+	}
 
 	return (
 		<div className="requisicao-page">
