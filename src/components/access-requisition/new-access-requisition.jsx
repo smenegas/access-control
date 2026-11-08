@@ -7,6 +7,7 @@ import { LoadMenuTree } from '../../helpers/system-menu/system-menu';
 import { getRelationships } from '../../helpers/relationships/relationships';
 import { uploadFiles, createAccessRequisition } from '../../helpers/access-requisitions/access-requsitions';
 import Header from '../common/header';
+import { LoadingOverlay } from '../common/loader/loader';
 import AccessRequisitionSuccess from './access-requisition-success';
 import './new-access-requisition.css';
 import '../common/messages.css';
@@ -24,9 +25,33 @@ function getItemName(item) {
 	return item?.name ?? item?.folder_name ?? item?.menu_name ?? item?.description ?? 'Item sem nome';
 }
 
+function getMenuChildren(menu) {
+	return menu?.childrens || menu?.children || [];
+}
+
+function findMenuPath(menus, targetId, ancestors = []) {
+	for (const menu of menus) {
+		if (getItemId(menu) === targetId) {
+			return { menu, ancestors };
+		}
+
+		const path = findMenuPath(getMenuChildren(menu), targetId, [...ancestors, menu]);
+		if (path) return path;
+	}
+
+	return null;
+}
+
+function getMenuBranchIds(menu) {
+	return [
+		getItemId(menu),
+		...getMenuChildren(menu).flatMap(getMenuBranchIds)
+	].filter((id) => id != null);
+}
+
 function MenuOption({ menu, selectedMenus, onToggle }) {
 	const menuId = getItemId(menu);
-	const children = menu?.childrens || menu?.children || [];
+	const children = getMenuChildren(menu);
 
 	return (
 		<div className="requisicao-menu-item">
@@ -203,12 +228,38 @@ export default function NewAccessRequisition() {
 
 	const toggleSelection = (id, setter) => {
 		setter((previous) => (
-			previous.includes(id)
-				? previous.filter((selectedId) => selectedId !== id)
-				: [...previous, id]
+			previous.includes(id)? previous.filter((selectedId) => selectedId !== id): [...previous, id]
 		));
 	};
 
+	const toggleMenuSelection = (id) => {
+		const path = findMenuPath(menuTree, id);
+		if (!path) return;
+
+		setSelectedMenus((previous) => {
+			const next = new Set(previous);
+			const checked = !next.has(id);
+
+			getMenuBranchIds(path.menu).forEach((menuId) => {
+				if (checked) next.add(menuId);
+				else next.delete(menuId);
+			});
+
+			path.ancestors.forEach((ancestor) => {
+				const ancestorId = getItemId(ancestor);
+				const hasSelectedDescendant = getMenuChildren(ancestor)
+					.flatMap(getMenuBranchIds)
+					.some((menuId) => next.has(menuId));
+
+				if (hasSelectedDescendant) next.add(ancestorId);
+				else next.delete(ancestorId);
+			});
+
+			return [...next];
+		});
+	};
+
+	// TODO: Update the handleSubmit function to send the selected menus and folders to the server when creating a new access requisition.
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		setMessage({ text: '', type: '' });
@@ -221,21 +272,33 @@ export default function NewAccessRequisition() {
 			attachments: selectedFiles.map(({ file }) => file)
 		};
 
+		// Notify the user if no system menus are selected
+		if (selectedMenus.length === 0) {
+			if (!window.confirm('Você não selecionou nenhum menu de sistema. Deseja continuar sem selecionar?')) {
+				setLoadingSubmit(false);
+				return;
+			}
+		}
+
+		// Notify the user if no network folders are selected
+		if (selectedFolders.length === 0) {
+			if (!window.confirm('Você não selecionou nenhuma pasta de rede. Deseja continuar sem selecionar?')) {
+				setLoadingSubmit(false);
+				return;
+			}
+		}
+
 		// Send the request data to the server
 		try {
 			const requestDataAux = { ...requestData };
 			delete requestDataAux.attachments; // Remove attachments for logging
-			delete requestDataAux.menus; // Remove menus for logging
-			delete requestDataAux.folders; // Remove folders for logging
 			const createResponse = await createAccessRequisition(requestDataAux);
 			if (!createResponse || !createResponse.id) {
 				setMessage({ text: 'Não foi possível enviar a solicitação.', type: 'erro' });
 				return;
 			}
 
-			const requisitionId = Array.isArray(createResponse.id)
-				? createResponse.id[0]
-				: createResponse.id;
+			const requisitionId = Array.isArray(createResponse.id)? createResponse.id[0]: createResponse.id;
 			if (requestData.attachments.length > 0) {
 				if (!requisitionId) {
 					setMessage({ text: 'Não foi possível identificar a solicitação para enviar os arquivos.', type: 'erro' });
@@ -284,6 +347,8 @@ export default function NewAccessRequisition() {
 		);
 	}
 
+	// TODO: Implement the registration of the system menus and network folders in the access requisition form.
+
 	return (
 		<div className="requisicao-page">
 			<main className="requisicao-card">
@@ -331,7 +396,7 @@ export default function NewAccessRequisition() {
 								<input id="request-email" name="email" type="email" className="requisicao-input" value={formData.email} onChange={updateField} required />
 							</div>
 							<div className="requisicao-input-group">
-								<label htmlFor="request-position">Cargo<span className="requisicao-label-optional">&nbsp;(opcional)</span></label>
+								<label htmlFor="request-position">Cargo</label>
 								<input 
 									id="request-position" 
 									name="position" 
@@ -339,6 +404,7 @@ export default function NewAccessRequisition() {
 									placeholder="Informe seu cargo" 
 									value={formData.position} 
 									onChange={updateField} 
+									required
 								/>
 							</div>
 							<div className="requisicao-input-group">
@@ -460,7 +526,6 @@ export default function NewAccessRequisition() {
 							)}
 						</div>
 					</section>
-
 					<section className="requisicao-section">
 						<div className="requisicao-section-heading">
 							<h2>Recursos solicitados</h2>
@@ -473,7 +538,7 @@ export default function NewAccessRequisition() {
 								<div className="requisicao-option-panel">
 									<h3>Menus de sistema</h3>
 									{menuTree.length > 0 ? menuTree.map((menu) => (
-										<MenuOption key={getItemId(menu)} menu={menu} selectedMenus={selectedMenus} onToggle={(id) => toggleSelection(id, setSelectedMenus)} />
+										<MenuOption key={getItemId(menu)} menu={menu} selectedMenus={selectedMenus} onToggle={toggleMenuSelection} />
 									)) : <p className="requisicao-empty-state">Nenhum menu disponível.</p>}
 								</div>
 								<div className="requisicao-option-panel">
@@ -500,6 +565,10 @@ export default function NewAccessRequisition() {
 					</div>
 				</form>
 			</main>
+			<LoadingOverlay
+				loading={loadingSubmit}
+				message="Enviando sua solicitação, aguarde..."
+			/>
 		</div>
 	);
 }
