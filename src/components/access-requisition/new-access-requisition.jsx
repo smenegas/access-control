@@ -9,24 +9,14 @@ import { uploadFiles, createAccessRequisition } from '../../helpers/access-requi
 import Header from '../common/header';
 import { LoadingOverlay } from '../common/loader/loader';
 import AccessRequisitionSuccess from './access-requisition-success';
+import MenuOption from './menu-option';
+import { getItemId, getItemName, getMenuChildren } from './menu-option-utils';
 import './new-access-requisition.css';
 import '../common/messages.css';
 
 function getCollection(data) {
 	if (Array.isArray(data)) return data;
 	return data?.Rows || data?.rows || data?.data || data?.items || [];
-}
-
-function getItemId(item) {
-	return item?.id ?? item?.ID ?? item?.folder_id ?? item?.menu_id;
-}
-
-function getItemName(item) {
-	return item?.name ?? item?.folder_name ?? item?.menu_name ?? item?.description ?? 'Item sem nome';
-}
-
-function getMenuChildren(menu) {
-	return menu?.childrens || menu?.children || [];
 }
 
 function findMenuPath(menus, targetId, ancestors = []) {
@@ -47,36 +37,6 @@ function getMenuBranchIds(menu) {
 		getItemId(menu),
 		...getMenuChildren(menu).flatMap(getMenuBranchIds)
 	].filter((id) => id != null);
-}
-
-function MenuOption({ menu, selectedMenus, onToggle }) {
-	const menuId = getItemId(menu);
-	const children = getMenuChildren(menu);
-
-	return (
-		<div className="requisicao-menu-item">
-			<label className="requisicao-check-option">
-				<input
-					type="checkbox"
-					checked={selectedMenus.includes(menuId)}
-					onChange={() => onToggle(menuId)}
-				/>
-				<span>{getItemName(menu)}</span>
-			</label>
-			{children.length > 0 && (
-				<div className="requisicao-menu-children">
-					{children.map((child) => (
-						<MenuOption
-							key={getItemId(child)}
-							menu={child}
-							selectedMenus={selectedMenus}
-							onToggle={onToggle}
-						/>
-					))}
-				</div>
-			)}
-		</div>
-	);
 }
 
 export default function NewAccessRequisition() {
@@ -259,7 +219,6 @@ export default function NewAccessRequisition() {
 		});
 	};
 
-	// TODO: Update the handleSubmit function to send the selected menus and folders to the server when creating a new access requisition.
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		setMessage({ text: '', type: '' });
@@ -346,8 +305,6 @@ export default function NewAccessRequisition() {
 			/>
 		);
 	}
-
-	// TODO: Implement the registration of the system menus and network folders in the access requisition form.
 
 	return (
 		<div className="requisicao-page">
